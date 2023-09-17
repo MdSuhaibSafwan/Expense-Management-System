@@ -1,14 +1,16 @@
 from .serializers import CategorySerializer, ExpenseSerializer
 from ..models import Category, Expense
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.decorators import action, permission_classes
+from rest_framework.decorators import action
 from .permissions import ExpensePermission
 from rest_framework.response import Response
+from .filters import CategoryFilter
 
 
 class CategoryViewSet(ModelViewSet):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
+    filter_backends = [CategoryFilter, ]
 
 
 class ExpenseViewSet(ModelViewSet):
