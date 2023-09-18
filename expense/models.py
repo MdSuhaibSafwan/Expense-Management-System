@@ -25,3 +25,6 @@ class Expense(models.Model):
 
     def __str__(self):
         return str(self.id)
+    
+    def total_cost(self):
+        return f"{(self.cost * self.quantity)}/-"

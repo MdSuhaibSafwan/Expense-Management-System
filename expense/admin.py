@@ -7,8 +7,11 @@ from django.shortcuts import redirect
 
 
 class ExpenseAdmin(admin.ModelAdmin):
-    list_display = ["category", "cost", "quantity", "is_approved", "is_completed"]
+    list_display = ["category", "cost", "quantity", "total_cost", "is_approved", "is_completed"]
     form = ExpenseAdminForm
+    model = Expense
+    search_fields = ["category__name"]
+    list_filter = ["is_approved", "is_completed"]
 
     def get_form(self, request, obj=None, **kwargs):
         user = request.user
@@ -40,7 +43,23 @@ class ExpenseAdmin(admin.ModelAdmin):
     
     def check_is_user_valid(self, user):
         return getattr(user, "is_author", getattr(user, "is_checker", getattr(user, "is_maker", None)))
-        
+    
+    def get_total_expense(self):
+        qs = self.model.objects.all()
+        return self.sum_total_expense(qs)
+    
+    def get_approved_expense(self):
+        qs = self.model.objects.filter(is_approved=True)
+        return self.sum_total_expense(qs)
+    
+    def get_completed_expense(self):
+        qs = self.model.objects.filter(is_completed=True)
+        return self.sum_total_expense(qs)
+    
+    def sum_total_expense(self, qs):
+        total = sum([i[0]*i[1] for i in list(qs.values_list("cost", "quantity"))])
+        return total
+    
 
 admin.site.register(Category)
 admin.site.register(Expense, ExpenseAdmin)
