@@ -17,6 +17,9 @@ class ExpenseAdminForm(ModelForm):
     
     def validate_changed_data_according_to_user_type(self):
         a = {
+            "cost": "is_author",
+            "quantity": "is_author",
+            "category": "is_author",
             "is_approved": "is_checker",
             "is_completed": "is_maker",
         }

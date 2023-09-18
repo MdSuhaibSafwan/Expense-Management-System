@@ -13,6 +13,17 @@ class ExpenseAdmin(admin.ModelAdmin):
     search_fields = ["category__name"]
     list_filter = ["is_approved", "is_completed"]
 
+    class Media:
+        js = [
+            "admin/admin_update_result_list.js"
+        ]
+    
+    @admin.action(description='Generate PDF file')
+    def generate_excel_file(self, request, queryset):
+        return self._generate_excel_file(request, queryset)
+
+    actions = [generate_excel_file, ]
+
     def get_form(self, request, obj=None, **kwargs):
         user = request.user
         if not self.check_is_user_valid(user):
@@ -28,6 +39,10 @@ class ExpenseAdmin(admin.ModelAdmin):
         form.user = request.user
         return form
     
+    def _generate_excel_file(self, request, queryset):
+        messages.success(request, "Excel file downloaded successfully")
+        return redirect("/admin/expense/expense/")
+    
     def add_view(self, request, form_url=None, extra_context=None):
         if not self.check_is_user_valid(request.user):
             messages.error(request, "User not permitted to manage expenses")
@@ -42,7 +57,7 @@ class ExpenseAdmin(admin.ModelAdmin):
         return super().change_view(request, object_id, form_url, extra_context)
     
     def check_is_user_valid(self, user):
-        return getattr(user, "is_author", getattr(user, "is_checker", getattr(user, "is_maker", None)))
+        return (user.is_author) or (user.is_checker) or (user.is_maker)
     
     def get_total_expense(self):
         qs = self.model.objects.all()
