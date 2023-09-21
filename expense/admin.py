@@ -8,7 +8,7 @@ from django.shortcuts import redirect
 
 class ExpenseAdmin(admin.ModelAdmin):
     change_list_template = "admin/expense/expense_list.html"
-    list_display = ["category", "cost", "quantity", "total_cost", "is_approved", "is_completed"]
+    list_display = ["category", "cost", "is_approved", "is_completed", "date_created"]
     form = ExpenseAdminForm
     model = Expense
     search_fields = ["category__name"]
@@ -27,10 +27,14 @@ class ExpenseAdmin(admin.ModelAdmin):
         if user.is_author:
             self.readonly_fields = ["is_approved", "is_completed"]
         if user.is_checker:
-            self.readonly_fields = ["category", "quantity",  "cost", "is_completed"]
+            self.readonly_fields = ["category", "title", "cost", "is_completed"]
         if user.is_maker:
-            self.readonly_fields = ["category", "cost", "quantity", "is_approved",]
+            self.readonly_fields = ["category", "title", "cost", "is_approved",]
         
+        if obj is None:
+            if not request.user.is_author:
+                raise PermissionDenied("Not Applicabe to add expenses")
+            
         return super().get_form(request, obj, **kwargs)
     
     def _generate_excel_file(self, request, queryset):
@@ -64,10 +68,6 @@ class ExpenseAdmin(admin.ModelAdmin):
     def get_completed_expense(self):
         qs = self.model.objects.filter(is_completed=True)
         return self.sum_total_expense(qs)
-    
-    def sum_total_expense(self, qs):
-        total = sum([i[0]*i[1] for i in list(qs.values_list("cost", "quantity"))])
-        return total
     
 
 admin.site.register(Category)

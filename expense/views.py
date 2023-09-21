@@ -21,7 +21,7 @@ def create_xl_report_for_expense(request):
     wb = Workbook()
     ws = wb.active
     ws.title = "Expenses"
-    headers = ["Name", "Price", "Quantity", "Pending", "Completed", "status"]
+    headers = ["Date", "Title", "Category Name", "Pending", "Completed", "status"]
     ws.append(headers)
 
     for expense in qs:
@@ -35,7 +35,7 @@ def create_xl_report_for_expense(request):
             status = "Approved"
             lst = [expense.total_cost(), "x", status]
 
-        final_list = [expense.category.name, expense.cost, expense.quantity, ]
+        final_list = [str(expense.date_created.date()), expense.title, expense.category.name, ]
         final_list.extend(lst)
         ws.append(final_list)
 

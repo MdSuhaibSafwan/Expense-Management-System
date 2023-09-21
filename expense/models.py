@@ -16,8 +16,8 @@ class Category(models.Model):
 
 class Expense(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    title = models.CharField(max_length=100)
     cost = models.FloatField()
-    quantity = models.PositiveIntegerField(default=1)
     is_approved = models.BooleanField(default=False)
     is_completed = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
