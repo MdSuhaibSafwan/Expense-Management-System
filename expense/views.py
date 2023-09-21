@@ -10,7 +10,7 @@ from openpyxl import Workbook
 def create_xl_report_for_expense(request):
     form = ExpenseAdminReportForm(data=request.POST)
     if not form.is_valid():
-        messages.error(request, message="Please provide date correctly")
+        messages.error(request, message=form.error_text)
         return redirect("/admin/expense/expense/", )
     
     date1 = form.cleaned_data.get("date1")
@@ -29,11 +29,11 @@ def create_xl_report_for_expense(request):
         lst = ["x", "x", status]
         if expense.is_completed:
             status = "Completed"
-            lst = ["x", expense.total_cost(), status]
+            lst = ["x", expense.cost, status]
 
         elif expense.is_approved:
             status = "Approved"
-            lst = [expense.total_cost(), "x", status]
+            lst = [expense.cost, "x", status]
 
         final_list = [str(expense.date_created.date()), expense.title, expense.category.name, ]
         final_list.extend(lst)
