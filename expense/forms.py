@@ -34,3 +34,14 @@ class ExpenseAdminForm(ModelForm):
                 pass
         
         return True
+    
+
+class ExpenseAdminReportForm(forms.Form):
+    date1 = forms.DateField()
+    date2 = forms.DateField()
+
+    def clean(self):
+        data =  super().clean()
+        print("data ", data)
+        return data
+

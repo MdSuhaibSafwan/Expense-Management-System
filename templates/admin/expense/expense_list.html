@@ -10,19 +10,21 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
 
-<li>
-    <input type="date" style="background-color: #333333;color: #fff;border: none;padding: 4px 6px;border-radius: 14px;">
-</li>
+<form action="/admin/create-report/" method="POST">
+    {% csrf_token %}
+    <li>
+        <input name="date1" type="date" style="background-color: #333333;color: #fff;border: none;padding: 4px 6px;border-radius: 14px;">
+    </li>
+    
+    <li>
+        <input type="date" name="date2" style="background-color: #333333;color: #fff;border: none;padding: 4px 6px;border-radius: 14px;">
+    </li>
+    
+    <li>
+        <input type="submit" style="background-color: #333333;color: #fff;border: none;padding: 4px 6px;border-radius: 14px;" class="add-link">
+    </li>
+    {{ block.super }}
+</form>
 
-<li>
-    <input type="date" style="background-color: #333333;color: #fff;border: none;padding: 4px 6px;border-radius: 14px;">
-</li>
-
-<li>
-    <a href="#" class="add-link">Generate Report</a>
-</li>
-
-
-{{ block.super }}
 
 {% endblock %}
