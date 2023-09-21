@@ -7,18 +7,14 @@ from django.shortcuts import redirect
 
 
 class ExpenseAdmin(admin.ModelAdmin):
+    change_list_template = "admin/expense/expense_list.html"
     list_display = ["category", "cost", "quantity", "total_cost", "is_approved", "is_completed"]
     form = ExpenseAdminForm
     model = Expense
     search_fields = ["category__name"]
     list_filter = ["is_approved", "is_completed"]
-
-    class Media:
-        js = [
-            "admin/admin_update_result_list.js"
-        ]
     
-    @admin.action(description='Generate PDF file')
+    @admin.action(description='Generate Excel file')
     def generate_excel_file(self, request, queryset):
         return self._generate_excel_file(request, queryset)
 
@@ -35,9 +31,7 @@ class ExpenseAdmin(admin.ModelAdmin):
         if user.is_maker:
             self.readonly_fields = ["category", "cost", "quantity", "is_approved",]
         
-        form = super().get_form(request, obj, **kwargs)
-        form.user = request.user
-        return form
+        return super().get_form(request, obj, **kwargs)
     
     def _generate_excel_file(self, request, queryset):
         messages.success(request, "Excel file downloaded successfully")
