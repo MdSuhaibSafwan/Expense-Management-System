@@ -4,6 +4,8 @@ from .models import Expense, Category
 from .forms import ExpenseAdminForm
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
+from django.http import HttpResponse
+from .utils import generate_excel_file_based_on_qs
 
 
 class ExpenseAdmin(admin.ModelAdmin):
@@ -38,8 +40,11 @@ class ExpenseAdmin(admin.ModelAdmin):
         return super().get_form(request, obj, **kwargs)
     
     def _generate_excel_file(self, request, queryset):
-        messages.success(request, "Excel file downloaded successfully")
-        return redirect("/admin/expense/expense/")
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment;filename="report.xlsx"'
+        wb, response = generate_excel_file_based_on_qs(queryset, response)
+        # messages.success(request, "Excel file downloaded successfully")
+        return response
     
     def add_view(self, request, form_url=None, extra_context=None):
         if not self.check_is_user_valid(request.user):

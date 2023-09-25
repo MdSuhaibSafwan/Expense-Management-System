@@ -2,9 +2,8 @@ from django.shortcuts import redirect
 from .models import Expense
 from .forms import ExpenseAdminReportForm
 from django.contrib import messages
-from .utils import get_expense_from_dates
+from .utils import get_expense_from_dates, generate_excel_file_based_on_qs
 from django.http import HttpResponse
-from openpyxl import Workbook
 
 
 def create_xl_report_for_expense(request):
@@ -18,26 +17,5 @@ def create_xl_report_for_expense(request):
     qs = get_expense_from_dates(date1, date2)
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment;filename="report.xlsx"'
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Expenses"
-    headers = ["Date", "Title", "Category Name", "Pending", "Completed", "status"]
-    ws.append(headers)
-
-    for expense in qs:
-        status = "not completed not approved"
-        lst = ["x", "x", status]
-        if expense.is_completed:
-            status = "Completed"
-            lst = ["x", expense.cost, status]
-
-        elif expense.is_approved:
-            status = "Approved"
-            lst = [expense.cost, "x", status]
-
-        final_list = [str(expense.date_created.date()), expense.title, expense.category.name, ]
-        final_list.extend(lst)
-        ws.append(final_list)
-
-    wb.save(response)    
+    wb, response = generate_excel_file_based_on_qs(qs, response)
     return response
