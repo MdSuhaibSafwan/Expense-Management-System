@@ -5,7 +5,6 @@ from .models import Expense
 
 
 class ExpenseAdminForm(ModelForm):
-    # some works need to be done
 
     class Meta:
         model = Expense
@@ -13,7 +12,19 @@ class ExpenseAdminForm(ModelForm):
 
     def clean(self):
         data = super().clean()
+        changed_data = self.changed_data
         return data
+    
+    def validate_changed_data(self):
+        data = {
+            "is_author": "category",
+            "is_author": "title",
+            "is_author": "cost",
+            "is_checker": "is_approved",
+            "is_maker": "is_completed",
+        }
+        user_type = self.user.get_user_type()
+        
 
 
 class ExpenseAdminReportForm(forms.Form):

@@ -61,3 +61,19 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+    
+    def get_user_type(self):
+        if self.is_author:
+            return "author"
+        
+        if self.is_checker:
+            return "checker"
+        
+        if self.is_maker:
+            return "maker"
+        
+        return None
+
+    @property
+    def user_type(self):
+        return self.get_user_type()
