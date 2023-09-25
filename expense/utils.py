@@ -16,7 +16,7 @@ def generate_excel_file_based_on_qs(queryset, response):
     
     for expense in queryset:
         status = "not completed not approved"
-        lst = ["null", "null", status]
+        lst = [expense.cost, "null", status]
         if expense.is_completed:
             status = "Completed"
             lst = ["null", expense.cost, status]
