@@ -74,6 +74,9 @@ class ExpenseAdmin(admin.ModelAdmin):
         qs = self.model.objects.filter(is_completed=True)
         return self.sum_total_expense(qs)
     
+    def connect_to_bank(self):
+        pass
+    
 
 admin.site.register(Category)
 admin.site.register(Expense, ExpenseAdmin)

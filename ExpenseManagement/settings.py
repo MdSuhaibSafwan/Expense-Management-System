@@ -19,6 +19,7 @@ INSTALLED_APPS = [
 
     'users.apps.UsersConfig',
     'expense.apps.ExpenseConfig',
+    'bank.apps.BankConfig',
 
     'rest_framework',
     'rest_framework.authtoken',
