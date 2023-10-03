@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from bank.models import BankCashout
 
 User = get_user_model()
 
@@ -15,11 +16,12 @@ class Category(models.Model):
 
 
 class Expense(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    bank_cashout = models.ForeignKey(BankCashout, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
     cost = models.FloatField()
-    is_approved = models.BooleanField(default=False)
-    is_completed = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 

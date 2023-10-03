@@ -10,11 +10,10 @@ from .utils import generate_excel_file_based_on_qs
 
 class ExpenseAdmin(admin.ModelAdmin):
     change_list_template = "admin/expense/expense_list.html"
-    list_display = ["category", "cost", "is_approved", "is_completed", "date_created"]
+    list_display = ["category", "cost", "date_created"]
     form = ExpenseAdminForm
     model = Expense
     search_fields = ["category__name"]
-    list_filter = ["is_approved", "is_completed"]
     
     @admin.action(description='Generate Excel file')
     def generate_excel_file(self, request, queryset):
@@ -26,12 +25,12 @@ class ExpenseAdmin(admin.ModelAdmin):
         user = request.user
         if not self.check_is_user_valid(user):
             raise PermissionDenied("User do not have any permission")
-        if user.is_author:
-            self.readonly_fields = ["is_approved", "is_completed"]
-        if user.is_checker:
-            self.readonly_fields = ["category", "title", "cost", "is_completed"]
-        if user.is_maker:
-            self.readonly_fields = ["category", "title", "cost", "is_approved",]
+        # if user.is_author:
+        #     self.readonly_fields = ["is_approved", "is_completed"]
+        # if user.is_checker:
+        #     self.readonly_fields = ["category", "title", "cost", "is_completed"]
+        # if user.is_maker:
+        #     self.readonly_fields = ["category", "title", "cost", "is_approved",]
         
         if obj is None:
             if not request.user.is_author:
