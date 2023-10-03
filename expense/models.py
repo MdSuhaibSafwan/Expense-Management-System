@@ -15,6 +15,10 @@ class Category(models.Model):
         return self.name
 
 
+class ExpenseManager(models.Manager):
+    pass
+
+
 class Expense(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
@@ -25,6 +29,8 @@ class Expense(models.Model):
     files = models.FileField(upload_to="expense/", null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
+
+    objects = ExpenseManager()
 
     def __str__(self):
         return str(self.id)
