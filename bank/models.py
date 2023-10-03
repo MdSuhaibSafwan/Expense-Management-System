@@ -22,6 +22,7 @@ class BankCashout(models.Model):
     cash = models.FloatField()
     is_approved = models.BooleanField(default=False)
     is_completed = models.BooleanField(default=False)
+    is_finished = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
