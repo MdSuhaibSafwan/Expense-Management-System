@@ -34,16 +34,16 @@ class ExpenseAdmin(admin.ModelAdmin):
         return response
     
     def add_view(self, request, form_url=None, extra_context=None):
-        has_balance_obj = BankCashout.objects.has_latest_approved_object()
-        if not has_balance_obj:
-            messages.error(request, "Don't have enough balance")
+        balance_obj = BankCashout.objects.get_latest_approved_object()
+        if balance_obj.is_finished():
+            messages.error(request, "No more balance remaining")
             return redirect("/admin")
         return super().add_view(request, form_url, extra_context)
     
     def change_view(self, request, object_id, form_url=None, extra_context=None):
-        has_balance_obj = BankCashout.objects.has_latest_approved_object()
-        if not has_balance_obj:
-            messages.error(request, "Don't have enough balance")
+        balance_obj = BankCashout.objects.get_latest_approved_object()
+        if balance_obj.is_finished():
+            messages.error(request, "No more balance remaining")
             return redirect("/admin")
 
         return super().change_view(request, object_id, form_url, extra_context)
