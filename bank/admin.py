@@ -1,14 +1,8 @@
 from django.contrib import admin
-from .models import CashCheckout, RegisteredBank
-
-
-class CashCheckoutAdmin(admin.ModelAdmin):
-    list_display = ["id", "title", "bank"]
+from .models import BankAccount
 
 
 class BankAdmin(admin.ModelAdmin):
-    list_display = ["id", "name", "open_balance"]
+    list_display = ["id", "name", "balance"]
 
-
-admin.site.register(CashCheckout, CashCheckoutAdmin)
-admin.site.register(RegisteredBank, BankAdmin)
+admin.site.register(BankAccount, BankAdmin)
