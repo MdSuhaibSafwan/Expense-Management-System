@@ -7,7 +7,6 @@ from .forms import UserAdminCreationForm, UserAdminChangeForm
 
 User = get_user_model()
 
-admin.site.unregister(Group)
 
 class UserAdmin(BaseUserAdmin):
     # The forms to add and change user instances
@@ -16,7 +15,7 @@ class UserAdmin(BaseUserAdmin):
     list_display = ['email', 'username', 'is_author', 'is_checker', 'is_maker', 'is_active', 
                     'is_staff', 'is_superuser']
     list_filter = ['is_superuser', 'is_staff', 'is_active']
-    
+
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name', )}),
