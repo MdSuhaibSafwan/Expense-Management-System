@@ -2,6 +2,7 @@ from typing import Any
 from django import forms
 from django.forms import ModelForm
 from .models import Expense
+from bank.models import BankAccount, BankCashout
 
 
 class ExpenseAdminForm(ModelForm):
@@ -15,6 +16,15 @@ class ExpenseAdminForm(ModelForm):
         changed_data = self.changed_data
         return data
     
+    def clean_cost(self):
+        cost = self.cleaned_data.get("cost")
+        bank_cashout_obj = BankCashout.objects.get_latest_approved_object()
+        remaining_total = bank_cashout_obj.cash - sum(list(bank_cashout_obj.expenses.all().values_list("cost", flat=True)))
+        if cost > remaining_total:
+            raise forms.ValidationError("Not sufficient balance")
+        
+        return cost
+
     def validate_changed_data(self):
         data = {
             "is_author": "category",

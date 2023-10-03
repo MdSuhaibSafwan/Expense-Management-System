@@ -22,7 +22,7 @@ class ExpenseManager(models.Manager):
 class Expense(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
-    bank_cashout = models.ForeignKey(BankCashout, on_delete=models.SET_NULL, null=True)
+    bank_cashout = models.ForeignKey(BankCashout, on_delete=models.SET_NULL, null=True, related_name="expenses")
     title = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     cost = models.FloatField()

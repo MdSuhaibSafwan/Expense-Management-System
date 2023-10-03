@@ -16,6 +16,20 @@ class BankAccount(models.Model):
         return self.name
 
 
+class BankCashoutManager(models.Manager):
+
+    def get_latest_approved_queryset(self):
+        qs = self.filter(is_approved=True, is_completed=True, is_finished=False)
+        return qs
+    
+    def get_latest_approved_obect(self):
+        return self.get_latest_approved_queryset().get()
+    
+    def has_latest_approved_obect(self):
+        qs = self.get_latest_approved_queryset()
+        return qs.exists()
+
+
 class BankCashout(models.Model):
     title = models.CharField(max_length=100)
     bank = models.ForeignKey(BankAccount, on_delete=models.SET_NULL, null=True)
@@ -25,6 +39,8 @@ class BankCashout(models.Model):
     is_finished = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
+
+    objects = BankCashoutManager()
 
     def __str__(self):
         return f"<Checkout: {self.bank}>"
