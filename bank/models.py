@@ -43,7 +43,7 @@ class BankCashout(models.Model):
         return f"<Checkout: {self.bank} {self.id}>"
     
     def is_finished(self):
-        return self.get_remaining_balance() == 0
+        return self.get_remaining_balance() <= 0
     
     def get_total_expense(self):
         return sum(list(self.expenses.all().values_list("cost", flat=True)))

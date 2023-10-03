@@ -23,29 +23,29 @@ class ExpenseAdmin(admin.ModelAdmin):
     actions = [generate_excel_file, ]
 
     def get_form(self, request, obj=None, **kwargs):
-                    
-        return super().get_form(request, obj, **kwargs)
+        form = super().get_form(request, obj, **kwargs)
+        form.should_add_cost = False
+        if obj:
+            form.added_cost = obj.cost
+            form.should_add_cost = True
+
+        return form
     
     def _generate_excel_file(self, request, queryset):
         response = HttpResponse(content_type='application/ms-excel')
         response['Content-Disposition'] = 'attachment;filename="report.xlsx"'
         wb, response = generate_excel_file_based_on_qs(queryset, response)
-        # messages.success(request, "Excel file downloaded successfully")
         return response
     
     def add_view(self, request, form_url=None, extra_context=None):
-        balance_obj = BankCashout.objects.get_latest_approved_object()
-        if balance_obj.is_finished():
-            messages.error(request, "No more balance remaining")
-            return redirect("/admin")
-        return super().add_view(request, form_url, extra_context)
-    
-    def change_view(self, request, object_id, form_url=None, extra_context=None):
-        balance_obj = BankCashout.objects.get_latest_approved_object()
-        if balance_obj.is_finished():
+        bank_cashout_obj = BankCashout.objects.get_latest_approved_object()
+        if bank_cashout_obj.is_finished():
             messages.error(request, "No more balance remaining")
             return redirect("/admin")
 
+        return super().add_view(request, form_url, extra_context)
+    
+    def change_view(self, request, object_id, form_url=None, extra_context=None):
         return super().change_view(request, object_id, form_url, extra_context)
     
     def check_is_user_valid(self, user):

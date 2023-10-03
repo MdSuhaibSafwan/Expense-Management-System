@@ -20,6 +20,9 @@ class ExpenseAdminForm(ModelForm):
         cost = self.cleaned_data.get("cost")
         bank_cashout_obj = BankCashout.objects.get_latest_approved_object()
         remaining_total = bank_cashout_obj.cash - sum(list(bank_cashout_obj.expenses.all().values_list("cost", flat=True)))
+        if self.should_add_cost:
+            remaining_total += self.added_cost
+            
         if cost > remaining_total:
             raise forms.ValidationError("Not sufficient balance")
         
