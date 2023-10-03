@@ -1,9 +1,9 @@
-from typing import Any
 from django.contrib import admin
 from .models import BankAccount, BankCashout
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
+from .forms import BankCashoutForm
 
 
 class BankAdmin(admin.ModelAdmin):
@@ -12,6 +12,7 @@ class BankAdmin(admin.ModelAdmin):
 
 class BankCashoutAdmin(admin.ModelAdmin):
     list_display = ["id", "bank", "cash", "is_approved", "is_completed"]
+    form = BankCashoutForm
 
     def get_form(self, request, obj=None, **kwargs):
         user = request.user
@@ -31,7 +32,7 @@ class BankCashoutAdmin(admin.ModelAdmin):
             self.readonly_fields = ["title", "bank", "cash", "is_completed"]
             
         if user.is_maker:
-            self.readonly_fields = ["title", "bank", "cash", "is_approved",]
+            self.readonly_fields = ["title", "bank", "cash", "is_approved"]
 
         if self.object is None:
             if not self.request.user.is_author:

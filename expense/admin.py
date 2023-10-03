@@ -6,6 +6,7 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
 from django.http import HttpResponse
 from .utils import generate_excel_file_based_on_qs
+from bank.models import BankCashout
 
 
 class ExpenseAdmin(admin.ModelAdmin):
@@ -33,10 +34,17 @@ class ExpenseAdmin(admin.ModelAdmin):
         return response
     
     def add_view(self, request, form_url=None, extra_context=None):
-        
+        has_balance_obj = BankCashout.objects.has_latest_approved_object()
+        if not has_balance_obj:
+            messages.error(request, "Don't have enough balance")
+            return redirect("/admin")
         return super().add_view(request, form_url, extra_context)
     
     def change_view(self, request, object_id, form_url=None, extra_context=None):
+        has_balance_obj = BankCashout.objects.has_latest_approved_object()
+        if not has_balance_obj:
+            messages.error(request, "Don't have enough balance")
+            return redirect("/admin")
 
         return super().change_view(request, object_id, form_url, extra_context)
     

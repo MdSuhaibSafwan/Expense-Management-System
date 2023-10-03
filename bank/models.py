@@ -22,10 +22,10 @@ class BankCashoutManager(models.Manager):
         qs = self.filter(is_approved=True, is_completed=True, is_finished=False)
         return qs
     
-    def get_latest_approved_obect(self):
+    def get_latest_approved_object(self):
         return self.get_latest_approved_queryset().get()
     
-    def has_latest_approved_obect(self):
+    def has_latest_approved_object(self):
         qs = self.get_latest_approved_queryset()
         return qs.exists()
 
@@ -36,7 +36,6 @@ class BankCashout(models.Model):
     cash = models.FloatField()
     is_approved = models.BooleanField(default=False)
     is_completed = models.BooleanField(default=False)
-    is_finished = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
@@ -44,3 +43,11 @@ class BankCashout(models.Model):
 
     def __str__(self):
         return f"<Checkout: {self.bank}>"
+    
+    def is_finished(self):
+        return self._is_finished()
+
+    def _is_finished(self):
+        cash = self.cash
+        total_expense = sum(list(self.expenses.all().values_list("cost", flat=True)))
+        return (cash - total_expense) == 0
