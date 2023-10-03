@@ -11,7 +11,7 @@ from bank.models import BankCashout
 
 class ExpenseAdmin(admin.ModelAdmin):
     change_list_template = "admin/expense/expense_list.html"
-    list_display = ["category", "cost", "date_created"]
+    list_display = ["category", "user", "bank_cashout", "cost", "date_created"]
     form = ExpenseAdminForm
     model = Expense
     search_fields = ["category__name"]
@@ -24,10 +24,13 @@ class ExpenseAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
+        form.user = request.user
         form.should_add_cost = False
         if obj:
             form.added_cost = obj.cost
             form.should_add_cost = True
+        if self.bank_cashout_obj:
+            form.bank_cashout = self.bank_cashout_obj
 
         return form
     
@@ -39,13 +42,17 @@ class ExpenseAdmin(admin.ModelAdmin):
     
     def add_view(self, request, form_url=None, extra_context=None):
         bank_cashout_obj = BankCashout.objects.get_latest_approved_object()
+        self.bank_cashout_obj = bank_cashout_obj
+        
         if bank_cashout_obj.is_finished():
             messages.error(request, "No more balance remaining")
-            return redirect("/admin")
+            return redirect("/admin/expense/expense/")
 
         return super().add_view(request, form_url, extra_context)
     
     def change_view(self, request, object_id, form_url=None, extra_context=None):
+        self.bank_cashout_obj = None
+        
         return super().change_view(request, object_id, form_url, extra_context)
     
     def check_is_user_valid(self, user):

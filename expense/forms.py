@@ -9,7 +9,7 @@ class ExpenseAdminForm(ModelForm):
 
     class Meta:
         model = Expense
-        fields = "__all__"
+        exclude = ["user", "bank_cashout"]
 
     def clean(self):
         data = super().clean()
@@ -22,7 +22,7 @@ class ExpenseAdminForm(ModelForm):
         remaining_total = bank_cashout_obj.cash - sum(list(bank_cashout_obj.expenses.all().values_list("cost", flat=True)))
         if self.should_add_cost:
             remaining_total += self.added_cost
-            
+
         if cost > remaining_total:
             raise forms.ValidationError("Not sufficient balance")
         
@@ -37,8 +37,13 @@ class ExpenseAdminForm(ModelForm):
             "is_maker": "is_completed",
         }
         user_type = self.user.get_user_type()
-        
 
+    def save(self, commit=False):
+        obj = super().save(commit=False)
+        obj.user = self.user
+        obj.bank_cashout = self.bank_cashout
+        obj.save()
+        return obj
 
 class ExpenseAdminReportForm(forms.Form):
     error_text = "Please Provide date correctly"
