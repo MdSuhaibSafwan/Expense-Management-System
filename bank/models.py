@@ -16,12 +16,14 @@ class BankAccount(models.Model):
         return self.name
 
 
-# class CashCheckout(models.Model):
-#     title = models.CharField(max_length=100)
-#     bank = models.ForeignKey(RegisteredBank, on_delete=models.SET_NULL, null=True)
-#     cash = models.FloatField()
-#     date_created = models.DateTimeField(auto_now_add=True)
-#     last_updated = models.DateTimeField(auto_now=True)
+class BankCashout(models.Model):
+    title = models.CharField(max_length=100)
+    bank = models.ForeignKey(BankAccount, on_delete=models.SET_NULL, null=True)
+    cash = models.FloatField()
+    is_approved = models.BooleanField(default=False)
+    is_completed = models.BooleanField(default=False)
+    date_created = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)
 
-#     def __str__(self):
-#         return f"<Checkout: {self.bank}>"
+    def __str__(self):
+        return f"<Checkout: {self.bank}>"
