@@ -22,6 +22,7 @@ class Expense(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     cost = models.FloatField()
+    files = models.FileField(upload_to="expense/", null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
