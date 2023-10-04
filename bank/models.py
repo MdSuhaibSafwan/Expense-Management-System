@@ -38,7 +38,7 @@ class BankAccount(models.Model):
         expenditure = self.get_total_cashouts()
         return (self.balance - expenditure)
 
-    def current_balance(self):
+    def open_balance(self):
         return self.get_remaining_balance()
 
 
@@ -77,3 +77,6 @@ class BankCashout(models.Model):
     def get_remaining_balance(self):
         total_expense = self.get_total_expense()
         return self.cash - total_expense
+
+    def remaining_balance(self):
+        return self.get_remaining_balance()

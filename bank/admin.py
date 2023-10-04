@@ -1,18 +1,13 @@
 from django.contrib import admin
-from .models import BankAccount, BankCashout
+from .models import BankAccount, BankCashout, BankAccountType
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from .forms import BankCashoutForm
 
 
-class BankAdmin(admin.ModelAdmin):
-    list_display = ["id", "name", "account_no", "account_type", "current_balance"]
-
-
-class BankCashoutAdmin(admin.ModelAdmin):
-    list_display = ["id", "bank", "cash", "is_approved", "is_completed"]
-    form = BankCashoutForm
+class BankCashAbstractAdmin(admin.ModelAdmin):
+    list_display = ["id", ]
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -80,6 +75,8 @@ class BankCashoutAdmin(admin.ModelAdmin):
     def is_checkout_balance_completed(self):
         msg = "Complete the approved checkout to apply for more"
         obj = BankCashout.objects.get_latest_approved_object()
+        if obj is None:
+            return True, msg
         return obj.is_finished(), msg
 
     def can_apply_for_checkout(self):
@@ -94,5 +91,20 @@ class BankCashoutAdmin(admin.ModelAdmin):
 
         return True, msg
 
+
+class BankAdmin(admin.ModelAdmin):
+    list_display = ["id", "name", "account_no", "account_type", "open_balance"]
+
+
+class BankCashoutAdmin(BankCashAbstractAdmin):
+    list_display = ["id", "title", "bank", "cash", "is_approved", "is_completed", "is_finished", "remaining_balance"]
+    form = BankCashoutForm
+
+
+class BankAccountTypeAdmin(admin.ModelAdmin):
+    list_display = ["name", ]
+
+
 admin.site.register(BankAccount, BankAdmin)
 admin.site.register(BankCashout, BankCashoutAdmin)
+admin.site.register(BankAccountType, BankAccountTypeAdmin)

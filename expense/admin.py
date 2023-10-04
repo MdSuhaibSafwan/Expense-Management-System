@@ -11,7 +11,7 @@ from bank.models import BankCashout
 
 class ExpenseAdmin(admin.ModelAdmin):
     change_list_template = "admin/expense/expense_list.html"
-    list_display = ["category", "user", "bank_cashout", "cost", "date_created"]
+    list_display = ["category", "user", "title", "bank_cashout_title", "cost", "date_created"]
     form = ExpenseAdminForm
     model = Expense
     search_fields = ["category__name"]
