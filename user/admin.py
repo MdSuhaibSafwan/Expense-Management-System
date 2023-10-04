@@ -9,7 +9,6 @@ User = get_user_model()
 
 
 class UserAdmin(BaseUserAdmin):
-    # The forms to add and change user instances
     form = UserAdminChangeForm
     add_form = UserAdminCreationForm
     list_display = ['email', 'username', 'is_author', 'is_checker', 'is_maker', 'is_active', 
@@ -32,7 +31,6 @@ class UserAdmin(BaseUserAdmin):
     )
     search_fields = ['email']
     ordering = ['email']
-    filter_horizontal = ()
 
 
 admin.site.register(User, UserAdmin)
