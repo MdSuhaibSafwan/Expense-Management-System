@@ -28,6 +28,9 @@ class BankAccount(models.Model):
         expenditure = self.get_total_cashouts()
         return (self.balance - expenditure)
 
+    def open_balance(self):
+        return self.get_remaining_balance()
+
 
 class BankCashoutManager(models.Manager):
 

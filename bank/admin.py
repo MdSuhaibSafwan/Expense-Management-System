@@ -7,7 +7,7 @@ from .forms import BankCashoutForm
 
 
 class BankAdmin(admin.ModelAdmin):
-    list_display = ["id", "name", "balance"]
+    list_display = ["id", "name", "open_balance"]
 
 
 class BankCashoutAdmin(admin.ModelAdmin):
@@ -23,6 +23,7 @@ class BankCashoutAdmin(admin.ModelAdmin):
             raise PermissionDenied("User not permitted to do so")
 
         if self.action_view == "change_view":
+            form.change_view = self.action_view
             form.cashout_obj = obj
         
         self.make_readonly_field_according_to_user(user)
@@ -60,6 +61,15 @@ class BankCashoutAdmin(admin.ModelAdmin):
     
     def check_is_user_valid(self, user):
         return (user.is_author) or (user.is_checker) or (user.is_maker)
+
+    def has_any_active_checkout(self):
+        msg = ""
+        return False, msg
+
+    def is_expense_approved(self):
+        msg = ""
+        return False, msg
+
 
 admin.site.register(BankAccount, BankAdmin)
 admin.site.register(BankCashout, BankCashoutAdmin)

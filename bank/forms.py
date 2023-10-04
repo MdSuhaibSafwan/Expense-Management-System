@@ -16,6 +16,7 @@ class BankCashoutForm(forms.ModelForm):
         except Exception as e:
             change_view = False
         remaining_total = bank.get_remaining_balance()
+        print("Change view ", change_view)
         if change_view:
             remaining_total += self.cashout_obj.cash
 
