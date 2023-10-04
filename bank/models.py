@@ -4,6 +4,16 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
+class BankAccountType(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.TextField(null=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+
 class BankAccount(models.Model):
     ACCOUNT_TYPE_CHOICES = [
         ["PT", "Pretty Cash Account"],
@@ -11,9 +21,9 @@ class BankAccount(models.Model):
         ["OT", "OTHERS"],
     ]
     name = models.CharField(max_length=1000)
-    account_no = models.IntegerField(unique=True)
+    account_no = models.CharField(max_length=20, unique=True)
     balance = models.FloatField(default=0)
-    account_type = models.CharField(max_length=3, choices=ACCOUNT_TYPE_CHOICES)
+    account_type = models.ForeignKey(BankAccountType, on_delete=models.SET_NULL, null=True)
     date_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
@@ -67,3 +77,6 @@ class BankCashout(models.Model):
     def get_remaining_balance(self):
         total_expense = self.get_total_expense()
         return self.cash - total_expense
+
+    def remaining_balance(self):
+        return self.get_remaining_balance()

@@ -11,7 +11,7 @@ from bank.models import BankCashout
 
 class ExpenseAdmin(admin.ModelAdmin):
     change_list_template = "admin/expense/expense_list.html"
-    list_display = ["category", "user", "bank_cashout", "cost", "date_created"]
+    list_display = ["category", "user", "title", "bank_cashout_title", "cost", "date_created"]
     form = ExpenseAdminForm
     model = Expense
     search_fields = ["category__name"]
@@ -44,9 +44,9 @@ class ExpenseAdmin(admin.ModelAdmin):
         bank_cashout_obj = BankCashout.objects.get_latest_approved_object()
         self.bank_cashout_obj = bank_cashout_obj
         
-        if bank_cashout_obj.is_finished():
-            messages.error(request, "No more balance remaining")
-            return redirect("/admin/expense/expense/")
+        # if bank_cashout_obj.is_finished():
+        #     messages.error(request, "No more balance remaining")
+        #     return redirect("/admin/expense/expense/")
 
         return super().add_view(request, form_url, extra_context)
     

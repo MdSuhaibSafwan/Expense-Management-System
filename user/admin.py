@@ -11,7 +11,7 @@ User = get_user_model()
 class UserAdmin(BaseUserAdmin):
     form = UserAdminChangeForm
     add_form = UserAdminCreationForm
-    list_display = ['email', 'username', 'is_author', 'is_checker', 'is_maker', 'is_active', 
+    list_display = ['email', 'is_author', 'is_checker', 'is_maker', 'is_active', 
                     'is_staff', 'is_superuser']
     list_filter = ['is_superuser', 'is_staff', 'is_active']
 
