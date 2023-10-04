@@ -49,6 +49,11 @@ class BankCashoutAdmin(admin.ModelAdmin):
             messages.error(request, "User not permitted to manage expenses")
             return redirect("/admin")
 
+        is_valid, msg = self.can_apply_for_checkout()
+        if not is_valid:
+            messages.error(request, msg)
+            return redirect("/admin/bank/bankcashout/")
+
         return super().add_view(request, form_url, extra_context)
     
     def change_view(self, request, object_id, form_url=None, extra_context=None):
@@ -57,19 +62,37 @@ class BankCashoutAdmin(admin.ModelAdmin):
             messages.error(request, "User not permitted to manage expenses")
             return redirect("/admin")
 
+        # is_valid, msg = self.can_apply_for_checkout()
+        # if not is_valid:
+        #     messages.error(request, msg)
+        #     return redirect("/admin/bank/bankcashout/")
+
         return super().change_view(request, object_id, form_url, extra_context)
     
     def check_is_user_valid(self, user):
         return (user.is_author) or (user.is_checker) or (user.is_maker)
 
-    def has_any_active_checkout(self):
-        msg = ""
-        return False, msg
+    def has_any_pending_checkout(self):
+        msg = "Please approve the Pending checkout"
+        qs = BankCashout.objects.filter(is_approved=False, is_completed=False)
+        return qs.exists(), msg
 
-    def is_expense_approved(self):
-        msg = ""
-        return False, msg
+    def is_checkout_balance_completed(self):
+        msg = "Complete the approved checkout to apply for more"
+        obj = BankCashout.objects.get_latest_approved_object()
+        return obj.is_finished(), msg
 
+    def can_apply_for_checkout(self):
+        msg = None
+        pending_checkout, pending_msg = self.has_any_pending_checkout()
+        if pending_checkout:
+            return False, pending_msg
+
+        is_balance_completed, incomp_bal_msg = self.is_checkout_balance_completed()
+        if not is_balance_completed:
+            return False, incomp_bal_msg
+
+        return True, msg
 
 admin.site.register(BankAccount, BankAdmin)
 admin.site.register(BankCashout, BankCashoutAdmin)
