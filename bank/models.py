@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 User = get_user_model()
 
@@ -80,3 +82,15 @@ class BankCashout(models.Model):
 
     def remaining_balance(self):
         return self.get_remaining_balance()
+
+
+class CashHistory(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.SET_NULL, null=True)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey()
+    amount = models.FloatField()
+    date_created = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.id)

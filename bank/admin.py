@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import BankAccount, BankCashout, BankAccountType
+from .models import BankAccount, BankCashout, BankAccountType, CashHistory
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
@@ -105,6 +105,11 @@ class BankAccountTypeAdmin(admin.ModelAdmin):
     list_display = ["name", ]
 
 
+class CashHistoryAdmin(admin.ModelAdmin):
+    list_display = ["id", "content_type", "object_id", "content_object", "amount"]
+
+
 admin.site.register(BankAccount, BankAdmin)
 admin.site.register(BankCashout, BankCashoutAdmin)
 admin.site.register(BankAccountType, BankAccountTypeAdmin)
+admin.site.register(CashHistory, CashHistoryAdmin)
