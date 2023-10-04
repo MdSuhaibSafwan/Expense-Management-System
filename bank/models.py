@@ -20,6 +20,14 @@ class BankAccount(models.Model):
     def __str__(self):
         return self.name
 
+    def get_total_cashouts(self):
+        cashouts = self.cashouts.all()
+        return sum(list(cashouts.values_list("cash", flat=True)))
+
+    def get_remaining_balance(self):
+        expenditure = self.get_total_cashouts()
+        return (self.balance - expenditure)
+
 
 class BankCashoutManager(models.Manager):
 
@@ -35,7 +43,7 @@ class BankCashoutManager(models.Manager):
 
 class BankCashout(models.Model):
     title = models.CharField(max_length=100)
-    bank = models.ForeignKey(BankAccount, on_delete=models.SET_NULL, null=True)
+    bank = models.ForeignKey(BankAccount, on_delete=models.SET_NULL, null=True, related_name="cashouts")
     cash = models.FloatField()
     is_approved = models.BooleanField(default=False)
     is_completed = models.BooleanField(default=False)

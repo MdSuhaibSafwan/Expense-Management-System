@@ -15,14 +15,18 @@ class BankCashoutAdmin(admin.ModelAdmin):
     form = BankCashoutForm
 
     def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
         user = request.user
         self.request = request
         self.object = obj
         if not self.check_is_user_valid(user):
             raise PermissionDenied("User not permitted to do so")
+
+        if self.action_view == "change_view":
+            form.cashout_obj = obj
         
         self.make_readonly_field_according_to_user(user)
-        return super().get_form(request, obj, **kwargs)
+        return form
     
     def make_readonly_field_according_to_user(self, user):
         if user.is_author:
@@ -39,6 +43,7 @@ class BankCashoutAdmin(admin.ModelAdmin):
                 raise PermissionDenied("Not Applicabe to add expenses")
 
     def add_view(self, request, form_url=None, extra_context=None):
+        self.action_view = "add_view"
         if not self.check_is_user_valid(request.user):
             messages.error(request, "User not permitted to manage expenses")
             return redirect("/admin")
@@ -46,6 +51,7 @@ class BankCashoutAdmin(admin.ModelAdmin):
         return super().add_view(request, form_url, extra_context)
     
     def change_view(self, request, object_id, form_url=None, extra_context=None):
+        self.action_view = "change_view"
         if not self.check_is_user_valid(request.user):
             messages.error(request, "User not permitted to manage expenses")
             return redirect("/admin")
