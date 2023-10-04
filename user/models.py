@@ -4,20 +4,10 @@ from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractUser):
-    username = models.CharField(
-        _("username"),
-        max_length=150,
-        unique=True,
-        help_text=_(
-            "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
-        ),
-        error_messages={
-            "unique": _("A user with that username already exists."),
-        },
-    )
+    username = None
     first_name = models.CharField(_("first name"), max_length=150, blank=True)
     last_name = models.CharField(_("last name"), max_length=150, blank=True)
-    email = models.EmailField(_("email address"), blank=True)
+    email = models.EmailField(_("email address"), blank=True, unique=True)
     is_staff = models.BooleanField(
         _("staff status"),
         default=False,
@@ -52,15 +42,15 @@ class User(AbstractUser):
     objects = UserManager()
 
     EMAIL_FIELD = "email"
-    USERNAME_FIELD = "username"
-    REQUIRED_FIELDS = ["email"]
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
 
     class Meta:
         verbose_name = _("user")
         verbose_name_plural = _("users")
 
     def __str__(self):
-        return self.username
+        return self.email
     
     def get_user_type(self):
         if self.is_author:

@@ -21,7 +21,7 @@ class UserAdmin(BaseUserAdmin):
         ('Personal info', {'fields': ('first_name', 'last_name', )}),
         ('Permissions', {'fields': ('is_superuser', 'is_active', 'is_staff'),}),
         ('Expense Permissions', {'fields': ('is_author', 'is_checker', 'is_maker')}),
-        # ('Groups', {'fields': ('groups', 'user_permissions')})
+        ('Groups', {'fields': ('groups', 'user_permissions')})
     )
 
     add_fieldsets = (
