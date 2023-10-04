@@ -17,12 +17,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'users.apps.UsersConfig',
+    'user.apps.UserConfig',
     'expense.apps.ExpenseConfig',
+    'bank.apps.BankConfig',
 
     'rest_framework',
     'rest_framework.authtoken',
-    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -77,7 +77,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = "users.User"
+AUTH_USER_MODEL = "user.User"
 
 LANGUAGE_CODE = 'en-us'
 
@@ -85,7 +85,7 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
