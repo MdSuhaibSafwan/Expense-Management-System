@@ -5,10 +5,15 @@ User = get_user_model()
 
 
 class BankAccount(models.Model):
+    ACCOUNT_TYPE_CHOICES = [
+        ["PT", "Pretty Cash Account"],
+        ["MW", "MERCHANT ACCOUNT"],
+        ["OT", "OTHERS"],
+    ]
     name = models.CharField(max_length=1000)
-    account_no = models.IntegerField()
+    account_no = models.IntegerField(unique=True)
     balance = models.FloatField(default=0)
-    account_type = models.CharField(max_length=3)
+    account_type = models.CharField(max_length=3, choices=ACCOUNT_TYPE_CHOICES)
     date_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
