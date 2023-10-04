@@ -7,7 +7,7 @@ from .forms import BankCashoutForm
 
 
 class BankAdmin(admin.ModelAdmin):
-    list_display = ["id", "name", "open_balance"]
+    list_display = ["id", "name", "account_no", "account_type", "current_balance"]
 
 
 class BankCashoutAdmin(admin.ModelAdmin):

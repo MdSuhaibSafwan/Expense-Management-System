@@ -44,9 +44,9 @@ class ExpenseAdmin(admin.ModelAdmin):
         bank_cashout_obj = BankCashout.objects.get_latest_approved_object()
         self.bank_cashout_obj = bank_cashout_obj
         
-        if bank_cashout_obj.is_finished():
-            messages.error(request, "No more balance remaining")
-            return redirect("/admin/expense/expense/")
+        # if bank_cashout_obj.is_finished():
+        #     messages.error(request, "No more balance remaining")
+        #     return redirect("/admin/expense/expense/")
 
         return super().add_view(request, form_url, extra_context)
     
