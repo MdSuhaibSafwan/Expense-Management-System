@@ -11,15 +11,14 @@ User = get_user_model()
 class UserAdmin(BaseUserAdmin):
     form = UserAdminChangeForm
     add_form = UserAdminCreationForm
-    list_display = ['email', 'is_author', 'is_checker', 'is_maker', 'is_active', 
-                    'is_staff', 'is_superuser']
+    list_display = ['email', 'is_author', 'is_checker', 'is_maker', 'is_active', 'is_staff', 'is_superuser']
     list_filter = ['is_superuser', 'is_staff', 'is_active']
 
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name', )}),
         ('Permissions', {'fields': ('is_superuser', 'is_active', 'is_staff'),}),
-        ('Expense Permissions', {'fields': ('is_author', 'is_checker', 'is_maker')}),
+        ('Expense Permissions', {'fields': ('user_type', )}),
         ('Groups', {'fields': ('groups', 'user_permissions')})
     )
 

@@ -41,6 +41,11 @@ class UserManager(UserManager):
 
 
 class User(AbstractUser):
+    USER_TYPE_CHOICE = [
+        ["AU", "AUTHOR"],
+        ["CH", "CHECKER"],
+        ["MK", "MAKER"],
+    ]
     username = None
     first_name = models.CharField(_("first name"), max_length=150, blank=True)
     last_name = models.CharField(_("last name"), max_length=150, blank=True)
@@ -58,21 +63,22 @@ class User(AbstractUser):
             "Unselect this instead of deleting accounts."
         ),
     )
-    is_author = models.BooleanField(
-        _("author status"),
-        default=False,
-        help_text=_("Designates whether the user can add an expense."),
-    )
-    is_checker = models.BooleanField(
-        _("checker status"),
-        default=False,
-        help_text=_("Designates whether the user can approve an expense"),
-    )
-    is_maker = models.BooleanField(
-        _("maker status"),
-        default=False,
-        help_text=_("Designates whether the user can complete an expense."),
-    )
+    user_type = models.CharField(max_length=2, choices=USER_TYPE_CHOICE, null=True)
+    # is_author = models.BooleanField(
+    #     _("author status"),
+    #     default=False,
+    #     help_text=_("Designates whether the user can add an expense."),
+    # )
+    # is_checker = models.BooleanField(
+    #     _("checker status"),
+    #     default=False,
+    #     help_text=_("Designates whether the user can approve an expense"),
+    # )
+    # is_maker = models.BooleanField(
+    #     _("maker status"),
+    #     default=False,
+    #     help_text=_("Designates whether the user can complete an expense."),
+    # )
 
     date_joined = models.DateTimeField(_("date joined"), auto_now_add=True)
 
@@ -89,18 +95,25 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
     
-    def get_user_type(self):
-        if self.is_author:
-            return "author"
-        
-        if self.is_checker:
-            return "checker"
-        
-        if self.is_maker:
-            return "maker"
-        
+    def get_user_type(self, user_type):
+        curr_user_type = self.user_type
+        if user_type is None:
+            return None
+        lst = []
+        for i in self.USER_TYPE_CHOICE:
+            if curr_user_type == user_type:
+                return True
+
         return None
 
     @property
-    def user_type(self):
-        return self.get_user_type()
+    def is_author(self):
+        return self.get_user_type("AU") == True
+
+    @property
+    def is_checker(self):
+        return self.get_user_type("CH") == True
+
+    @property
+    def is_maker(self):
+        return self.get_user_type("MK") == True
