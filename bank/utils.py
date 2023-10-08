@@ -6,11 +6,11 @@ def create_cash_history(instance):
 	app_label = instance._meta.app_label
 	model_name = instance.__class__.__name__
 	try:
-		amount = instance.amount
+		amount = instance.cost
 	except AttributeError:
 		amount = instance.cash
 	except AttributeError:
-		amount = instance.cost
+		amount = instance.amount
 	
 	content_type, created = ContentType.objects.get_or_create(app_label=app_label, model=model_name.lower())
 	ch_obj = CashHistory.objects.create(content_type=content_type, object_id=instance.id, 
