@@ -33,3 +33,33 @@ class FundTransfer(BaseModel):
 	def __str__(self):
 		return str(self.id)
 
+	def is_approved(self):
+		pass
+
+	def get_approve_response(self):
+		pass
+
+	def is_checked(self):
+		pass
+
+	def get_check_response(self):
+		pass
+
+class FundApproveResponse(BaseModel):
+	user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+	description = models.TextField()
+	is_approved = models.BooleanField()
+	fund_transfer = models.ForeignKey(FundTransfer, on_delete=models.CASCADE, )
+
+	def __str__(self):
+		return str(self.id)
+
+
+class FundCheckResponse(BaseModel):
+	user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+	description = models.TextField()
+	is_checked = models.BooleanField()
+	fund_transfer = models.ForeignKey(FundTransfer, on_delete=models.CASCADE, )
+
+	def __str__(self):
+		return str(self.id)
