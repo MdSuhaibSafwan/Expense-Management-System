@@ -7,3 +7,4 @@ class BankConfig(AppConfig):
 
     def ready(self):
         from . import signals
+        from . import dispatch

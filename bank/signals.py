@@ -1,15 +1,13 @@
 from django.dispatch import receiver
 from expense.dispatch import expense_created_signal
-from django.contrib.contenttypes.models import ContentType
-from .models import CashHistory
+from .dispatch import bank_cashout_approved
+from .utils import create_cash_history
 
 
 @receiver(signal=expense_created_signal)
-def create_cash_history_for_expense(sender, expense, **kwargs):
-	app_label = expense._meta.app_label
-	model_name = expense.__class__.__name__
-	content_type, created = ContentType.objects.get_or_create(app_label=app_label, model=model_name.lower())
-	ch_obj = CashHistory.objects.create(content_type=content_type, object_id=expense.id, 
-			content_object=expense, amount=expense.cost)
+def create_cash_history_for_expense(sender, instance, **kwargs):
+	create_cash_history(instance)
 
-	return ch_obj
+@receiver(signal=bank_cashout_approved)
+def create_cash_history_for_bank_account_cashout(sender, instance, **kwargs):
+	create_cash_history(instance)

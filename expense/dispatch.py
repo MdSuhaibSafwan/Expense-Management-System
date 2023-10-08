@@ -9,4 +9,4 @@ expense_created_signal = django.dispatch.Signal()
 @receiver(signal=post_save, sender=Expense)
 def send_signal_expense_created(sender, instance, created, **kwargs):
 	if created:
-		expense_created_signal.send(sender=Expense.__class__, expense=instance)
+		expense_created_signal.send(sender=Expense.__class__, instance=instance)
