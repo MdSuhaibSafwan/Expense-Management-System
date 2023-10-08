@@ -106,7 +106,7 @@ class BankAccountTypeAdmin(admin.ModelAdmin):
 
 
 class CashHistoryAdmin(admin.ModelAdmin):
-    list_display = ["id", "content_type", "object_id", "content_object", "amount"]
+    list_display = ["id", "title", "content_type", "object_id", "content_object", "amount", "cash_insertion"]
 
 
 admin.site.register(BankAccount, BankAdmin)

@@ -102,5 +102,17 @@ class CashHistory(models.Model):
         qs = model.objects.filter(id=obj_id)
         if not qs.exists():
             raise ValueError("Object with this id not found.")
-    
+
         return super().save(*args, **kwargs)
+
+    def cash_insertion(self):
+        return not self.is_object_an_expense()
+
+    def is_object_an_expense(self):
+        return self.content_type.model == 'expense'
+
+    def title(self):
+        if not self.content_object:
+            return None
+
+        return self.content_object.title
