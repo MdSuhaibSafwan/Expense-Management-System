@@ -17,6 +17,7 @@ class Account(BaseModel):
 	name = models.CharField(max_length=200)
 	account_no = models.CharField(max_length=100, unique=True)
 	routing_no = models.CharField(max_length=200, null=True, blank=True)
+	opening_balance = models.FloatField(default=0)
 	date_created = models.DateTimeField(default=timezone.now)
 	account_type = models.ForeignKey(AccountType, on_delete=models.SET_NULL, null=True)
 

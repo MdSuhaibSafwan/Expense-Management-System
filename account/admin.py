@@ -4,15 +4,15 @@ from lib.admin import BaseAdmin
 
 
 class FundTransferAdmin(BaseAdmin):
-	pass
+	list_display = ["from_account", "to_account", "amount"]
 
 
 class AccountAdmin(BaseAdmin):
-	list_display = ["account_no", "routing_no", "account_type", "date_created"]
+	list_display = ["account_no", "routing_no", "account_type", "opening_balance", "date_created"]
 
 
 class AccountTypeAdmin(BaseAdmin):
-	pass
+	list_display = ["id", "name"]
 
 
 class FundApproveResponseAdmin(BaseAdmin):
@@ -21,7 +21,6 @@ class FundApproveResponseAdmin(BaseAdmin):
 
 class FundCheckResponseAdmin(BaseAdmin):
 	pass
-
 
 
 admin.site.register(Account, AccountAdmin)
