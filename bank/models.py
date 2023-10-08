@@ -94,3 +94,13 @@ class CashHistory(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+    def save(self, *args, **kwargs):
+        obj_id = self.object_id
+        content_type = self.content_type
+        model = content_type._meta.apps.get_model(f"{content_type.app_label}.{content_type.model}")
+        qs = model.objects.filter(id=obj_id)
+        if not qs.exists():
+            raise ValueError("Object with this id not found.")
+    
+        return super().save(*args, **kwargs)
