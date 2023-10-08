@@ -4,7 +4,7 @@ from lib.admin import BaseAdmin
 
 
 class AccountAdmin(BaseAdmin):
-	pass
+	list_display = ["account_no", "routing_no", "account_type", "date_created"]
 
 
 class AccountTypeAdmin(BaseAdmin):
