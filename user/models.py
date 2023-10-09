@@ -78,12 +78,15 @@ class User(AbstractUser):
 
     @property
     def is_author(self):
-        return self.get_user_type() == True
+        return self.has_perm("account.add_fundtransfer")
 
     @property
     def is_checker(self):
-        return self.get_user_type() == True
+        return self.has_perm("account.add_fundcheck")
 
     @property
     def is_maker(self):
-        return self.get_user_type() == True
+        return self.has_perm("account.add_fundapprove")
+
+    def is_approver(self):
+        return self.has_perm("account.add_fundapprove")
