@@ -24,6 +24,9 @@ class Account(BaseModel):
 	def __str__(self):
 		return self.name
 
+	def get_current_balance(self):
+		return self.opening_balance
+
 
 class FundTransfer(BaseModel):
 	amount = models.FloatField()
