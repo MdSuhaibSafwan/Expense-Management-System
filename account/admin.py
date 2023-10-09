@@ -4,7 +4,7 @@ from lib.admin import BaseAdmin
 
 
 class FundTransferAdmin(BaseAdmin):
-	list_display = ["from_account", "to_account", "amount"]
+	list_display = ["from_account", "to_account", "amount", "is_approved", "is_checked"]
 
 
 class AccountAdmin(BaseAdmin):

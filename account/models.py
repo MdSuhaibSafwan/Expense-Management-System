@@ -35,22 +35,41 @@ class FundTransfer(BaseModel):
 		return str(self.id)
 
 	def is_approved(self):
-		pass
+		obj = self.get_approval_response()
+		if obj is None:
+			return False
 
-	def get_approve_response(self):
-		pass
+		return obj.is_approved
+
+	def get_approval_response(self):
+		try:
+			obj = self.approval_response
+		except ObjectDoesNotExist:
+			return None
+
+		return obj
 
 	def is_checked(self):
-		pass
+		obj = self.get_checking_response()
+		if obj is None:
+			return False
 
-	def get_check_response(self):
-		pass
+		return obj.is_checked
+
+	def get_checking_response(self):
+		try:
+			obj = self.checked_response
+		except ObjectDoesNotExist:
+			return None
+
+		return obj
+
 
 class FundApproveResponse(BaseModel):
 	user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 	description = models.TextField()
 	is_approved = models.BooleanField()
-	fund_transfer = models.ForeignKey(FundTransfer, on_delete=models.CASCADE, )
+	fund_transfer = models.OneToOneField(FundTransfer, on_delete=models.CASCADE, related_name="approval_response")
 
 	def __str__(self):
 		return str(self.id)
@@ -60,7 +79,7 @@ class FundCheckResponse(BaseModel):
 	user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 	description = models.TextField()
 	is_checked = models.BooleanField()
-	fund_transfer = models.ForeignKey(FundTransfer, on_delete=models.CASCADE, )
+	fund_transfer = models.OneToOneField(FundTransfer, on_delete=models.CASCADE, related_name="checked_response")
 
 	def __str__(self):
 		return str(self.id)
