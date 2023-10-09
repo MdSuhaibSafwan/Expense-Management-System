@@ -110,7 +110,7 @@ class FundCheck(BaseModel):
 	user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 	description = models.TextField()
 	is_checked = models.BooleanField()
-	fund_transfer = models.OneToOneField(FundTransfer, on_delete=models.CASCADE, related_name="checked_response")
+	fund_transfer = models.OneToOneField(FundTransfer, on_delete=models.PROTECT, related_name="checked_response")
 
 	def __str__(self):
 		return str(self.id)
@@ -120,8 +120,8 @@ class FundApprove(BaseModel):
 	user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 	description = models.TextField()
 	is_approved = models.BooleanField()
-	fund_transfer = models.OneToOneField(FundTransfer, on_delete=models.CASCADE, related_name="approval_response")
-	fund_checking_response = models.OneToOneField(FundCheck, on_delete=models.SET_NULL, null=True)
+	fund_transfer = models.OneToOneField(FundTransfer, on_delete=models.PROTECT, related_name="approval_response")
+	fund_checking_response = models.OneToOneField(FundCheck, on_delete=models.PROTECT)
 
 	def __str__(self):
 		return str(self.id)
