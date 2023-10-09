@@ -1,9 +1,11 @@
 from django.contrib import admin
 from .models import AccountType, Account, FundTransfer, FundApproveResponse, FundCheckResponse
 from lib.admin import BaseAdmin
+from .forms import FundTransferForm
 
 
 class FundTransferAdmin(BaseAdmin):
+	form = FundTransferForm
 	list_display = ["from_account", "to_account", "amount", "is_approved", "is_checked"]
 
 
