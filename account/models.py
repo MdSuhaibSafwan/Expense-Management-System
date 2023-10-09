@@ -34,6 +34,12 @@ class FundTransfer(BaseModel):
 	def __str__(self):
 		return str(self.id)
 
+	def save(self, *args, **kwargs):
+		if self.from_account == self.to_account:
+			raise ValueError("Account cannot transfer among itself")
+
+		return super().save(*args, **kwargs)
+
 	def is_approved(self):
 		obj = self.get_approval_response()
 		if obj is None:
