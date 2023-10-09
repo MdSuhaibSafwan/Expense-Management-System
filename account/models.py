@@ -37,26 +37,26 @@ class Account(BaseModel):
 		return self.opening_balance
 
 	def get_latest_outgoing_fund_transfer(self):
-		obj = self.fund_transfer_from.last()
+		obj = self.fund_transfer_from.order_by("-date_created").first()
 		if obj is None:
 			return None
 
 		return obj
 
 	def get_latest_incoming_fund_transfer(self):
-		obj = self.fund_transfer_to.last()
+		obj = self.fund_transfer_to.order_by("-date_created").first()
 		if obj is None:
 			return None
 
 		return obj
 
 	def get_latest_approved_outgoing_fund_transfer(self):
-		qs = self.fund_transfer_from.filter(Q(approval_response__is_approved=True))
+		qs = self.fund_transfer_from.filter(Q(approval_response__is_approved=True)).order_by("-date_created")
 		return qs.last()
 
 
 	def get_latest_approved_incoming_fund_transfer(self):
-		qs = self.fund_transfer_to.filter(Q(approval_response__is_approved=True))
+		qs = self.fund_transfer_to.filter(Q(approval_response__is_approved=True)).order_by("-date_created")
 		return qs.last()
 
 
