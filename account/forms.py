@@ -87,9 +87,6 @@ class FundCheckFormSet(BaseInlineFormSet):
 		fund_check_obj = getattr(fund_transfer_obj, "checked_response")
 		fund_check_obj.user = user
 		fund_check_obj.save()
-
-		print("Fund Check Obj ", fund_check_obj)
-
 		return saved_instances
 
 
@@ -109,9 +106,18 @@ class FundApproveFormSet(BaseInlineFormSet):
 		if not hasattr(fund_transfer_obj, "approval_response"):
 			return saved_instances
 
+		if not hasattr(fund_transfer_obj, "checked_response"):
+			return saved_instances
+
+		fund_check_obj = getattr(fund_transfer_obj, "checked_response")
+
 		fund_approve_obj = getattr(fund_transfer_obj, "approval_response")
 		fund_approve_obj.user = user
+		fund_approve_obj.fund_checking_response = fund_check_obj
 		fund_approve_obj.save()
+
+		if not hasattr(fund_transfer_obj, "approval_response"):
+			return saved_instances
 
 		print("Fund Approval Obj ", fund_approve_obj)
 
