@@ -7,6 +7,12 @@ from .forms import FundTransferForm
 class FundTransferAdmin(BaseAdmin):
 	form = FundTransferForm
 	list_display = ["from_account", "to_account", "amount", "is_approved", "is_checked"]
+	fieldsets = (
+		('Accounts', {'fields': ('from_account', 'to_account', )}),
+		('Others', {'fields': ('amount', 'description')})
+	)
+
+	add_fieldsets = fieldsets
 
 
 class AccountAdmin(BaseAdmin):

@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from lib.models import BaseModel
 from django.utils import timezone
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 
 User = get_user_model()
 
@@ -13,6 +15,11 @@ class AccountType(BaseModel):
 		return self.name
 
 
+class AccountManager(models.Manager):
+	pass
+
+
+
 class Account(BaseModel):
 	name = models.CharField(max_length=200)
 	account_no = models.CharField(max_length=100, unique=True)
@@ -21,18 +28,43 @@ class Account(BaseModel):
 	date_created = models.DateTimeField(default=timezone.now)
 	account_type = models.ForeignKey(AccountType, on_delete=models.SET_NULL, null=True)
 
+	objects = AccountManager()
+
 	def __str__(self):
 		return self.name
 
 	def get_current_balance(self):
 		return self.opening_balance
 
+	def get_latest_outgoing_fund_transfer(self):
+		obj = self.fund_transfer_from.last()
+		if obj is None:
+			return None
+
+		return obj
+
+	def get_latest_incoming_fund_transfer(self):
+		obj = self.fund_transfer_to.last()
+		if obj is None:
+			return None
+
+		return obj
+
+	def get_latest_approved_outgoing_fund_transfer(self):
+		qs = self.fund_transfer_from.filter(Q(approval_response__is_approved=True))
+		return qs.last()
+
+
+	def get_latest_approved_incoming_fund_transfer(self):
+		qs = self.fund_transfer_to.filter(Q(approval_response__is_approved=True))
+		return qs.last()
+
 
 class FundTransfer(BaseModel):
 	amount = models.FloatField()
 	description = models.TextField()
-	from_account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="accounts_from")
-	to_account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="accounts_to")
+	from_account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="fund_transfer_from")
+	to_account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="fund_transfer_to")
 
 	def __str__(self):
 		return str(self.id)
