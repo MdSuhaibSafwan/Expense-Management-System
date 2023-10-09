@@ -18,8 +18,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'user.apps.UserConfig',
-    'expense.apps.ExpenseConfig',
-    'bank.apps.BankConfig',
+    'account.apps.AccountConfig',
+    # 'expense.apps.ExpenseConfig',
+    # 'bank.apps.BankConfig',
 
     'rest_framework',
     'rest_framework.authtoken',

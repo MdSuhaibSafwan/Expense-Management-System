@@ -51,9 +51,11 @@ class ExpenseAdmin(admin.ModelAdmin):
         return super().add_view(request, form_url, extra_context)
     
     def change_view(self, request, object_id, form_url=None, extra_context=None):
-        self.bank_cashout_obj = None
-        
-        return super().change_view(request, object_id, form_url, extra_context)
+        messages.error(request, "Expense Change is not possible")
+        return redirect("/admin/expense/expense/")
+        # bank_cashout_obj = BankCashout.objects.get_latest_approved_object()
+        # self.bank_cashout_obj = bank_cashout_obj
+        # return super().change_view(request, object_id, form_url, extra_context)
     
     def check_is_user_valid(self, user):
         return (user.is_author) or (user.is_checker) or (user.is_maker)

@@ -58,22 +58,6 @@ class User(AbstractUser):
             "Unselect this instead of deleting accounts."
         ),
     )
-    is_author = models.BooleanField(
-        _("author status"),
-        default=False,
-        help_text=_("Designates whether the user can add an expense."),
-    )
-    is_checker = models.BooleanField(
-        _("checker status"),
-        default=False,
-        help_text=_("Designates whether the user can approve an expense"),
-    )
-    is_maker = models.BooleanField(
-        _("maker status"),
-        default=False,
-        help_text=_("Designates whether the user can complete an expense."),
-    )
-
     date_joined = models.DateTimeField(_("date joined"), auto_now_add=True)
 
     objects = UserManager()
@@ -90,17 +74,20 @@ class User(AbstractUser):
         return self.email
     
     def get_user_type(self):
-        if self.is_author:
-            return "author"
-        
-        if self.is_checker:
-            return "checker"
-        
-        if self.is_maker:
-            return "maker"
-        
         return None
 
     @property
-    def user_type(self):
-        return self.get_user_type()
+    def is_author(self):
+        return self.has_perm("account.add_fundtransfer")
+
+    @property
+    def is_checker(self):
+        return self.has_perm("account.add_fundcheck")
+
+    @property
+    def is_maker(self):
+        return self.has_perm("account.add_fundapprove")
+
+    @property
+    def is_approver(self):
+        return self.has_perm("account.add_fundapprove")

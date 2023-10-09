@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 User = get_user_model()
 
@@ -80,3 +82,37 @@ class BankCashout(models.Model):
 
     def remaining_balance(self):
         return self.get_remaining_balance()
+
+
+class CashHistory(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.SET_NULL, null=True)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey()
+    amount = models.FloatField()
+    date_created = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.id)
+
+    def save(self, *args, **kwargs):
+        obj_id = self.object_id
+        content_type = self.content_type
+        model = content_type._meta.apps.get_model(f"{content_type.app_label}.{content_type.model}")
+        qs = model.objects.filter(id=obj_id)
+        if not qs.exists():
+            raise ValueError("Object with this id not found.")
+
+        return super().save(*args, **kwargs)
+
+    def cash_insertion(self):
+        return not self.is_object_an_expense()
+
+    def is_object_an_expense(self):
+        return self.content_type.model == 'expense'
+
+    def title(self):
+        if not self.content_object:
+            return None
+
+        return self.content_object.title
