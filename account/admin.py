@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import AccountType, Account, FundTransfer, FundApproveResponse, FundCheckResponse
+from .models import AccountType, Account, FundTransfer, FundApprove, FundCheck
 from lib.admin import BaseAdmin
 from .forms import FundTransferForm
 
@@ -23,16 +23,16 @@ class AccountTypeAdmin(BaseAdmin):
 	list_display = ["id", "name"]
 
 
-class FundApproveResponseAdmin(BaseAdmin):
+class FundApproveAdmin(BaseAdmin):
 	pass
 
 
-class FundCheckResponseAdmin(BaseAdmin):
+class FundCheckAdmin(BaseAdmin):
 	pass
 
 
 admin.site.register(Account, AccountAdmin)
 admin.site.register(AccountType, AccountTypeAdmin)
-admin.site.register(FundApproveResponse, FundApproveResponseAdmin)
-admin.site.register(FundCheckResponse, FundCheckResponseAdmin)
+admin.site.register(FundApprove, FundApproveAdmin)
+admin.site.register(FundCheck, FundCheckAdmin)
 admin.site.register(FundTransfer, FundTransferAdmin)
