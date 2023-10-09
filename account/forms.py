@@ -1,5 +1,21 @@
 from django import forms
-from .models import FundTransfer
+from .models import FundTransfer, FundApprove, FundCheck
+from django.forms.models import BaseInlineFormSet 
+
+
+class FundApproveForm(forms.ModelForm):
+
+	class Meta:
+		model = FundApprove
+		fields = "__all__"
+
+
+class FundCheckForm(forms.ModelForm):
+
+	class Meta:
+		model = FundCheck
+		fields = "__all__"
+
 
 
 class FundTransferForm(forms.ModelForm):
@@ -10,6 +26,8 @@ class FundTransferForm(forms.ModelForm):
 
 	def clean(self):
 		data = super().clean()
+		if not self.check_validation:
+			return data
 		from_account = data.get("from_account")
 		to_account = data.get("to_account")
 		if from_account == to_account:
@@ -49,4 +67,53 @@ class FundTransferForm(forms.ModelForm):
 			self.add_error("from_account", "Please approve previous fund transaction to apply again from this account")
 
 		return True
+
+
+class FundCheckFormSet(BaseInlineFormSet):
+	def save_new_objects(self, commit=True):
+		saved_instances = super(FundCheckFormSet, self).save_new_objects(commit)
+		if commit:
+			pass
+		return saved_instances
+
+	def save_existing_objects(self, commit=True):
+		saved_instances = super(FundCheckFormSet, self).save_existing_objects(commit)
+		print("Saving existing object ", saved_instances)
+		user = self.request.user
+		fund_transfer_obj = self.fund_transfer_obj
+		if not hasattr(fund_transfer_obj, "checked_response"):
+			return saved_instances
+
+		fund_check_obj = getattr(fund_transfer_obj, "checked_response")
+		fund_check_obj.user = user
+		fund_check_obj.save()
+
+		print("Fund Check Obj ", fund_check_obj)
+
+		return saved_instances
+
+
+
+class FundApproveFormSet(BaseInlineFormSet):
+	def save_new_objects(self, commit=True):
+		saved_instances = super(FundApproveFormSet, self).save_new_objects(commit)
+		if commit:
+			pass
+		return saved_instances
+
+	def save_existing_objects(self, commit=True):
+		saved_instances = super(FundApproveFormSet, self).save_existing_objects(commit)
+		print("Saving existing object ", saved_instances)
+		user = self.request.user
+		fund_transfer_obj = self.fund_transfer_obj
+		if not hasattr(fund_transfer_obj, "approval_response"):
+			return saved_instances
+
+		fund_approve_obj = getattr(fund_transfer_obj, "approval_response")
+		fund_approve_obj.user = user
+		fund_approve_obj.save()
+
+		print("Fund Approval Obj ", fund_approve_obj)
+
+		return saved_instances
 

@@ -88,5 +88,6 @@ class User(AbstractUser):
     def is_maker(self):
         return self.has_perm("account.add_fundapprove")
 
+    @property
     def is_approver(self):
         return self.has_perm("account.add_fundapprove")
