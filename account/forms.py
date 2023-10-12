@@ -26,6 +26,7 @@ class FundTransferForm(forms.ModelForm):
 
 	def clean(self):
 		data = super().clean()
+		print("Val ", self.check_validation, )
 		if not self.check_validation:
 			return data
 		from_account = data.get("from_account")
@@ -34,6 +35,7 @@ class FundTransferForm(forms.ModelForm):
 			raise forms.ValidationError("Accounts Cannot transfer among themselves")
 
 		amount = data.get("amount")
+		print("Amount ", amount, from_account.get_current_balance())
 		if from_account.get_current_balance() < amount:
 			raise forms.ValidationError("Insufficient Balance")
 

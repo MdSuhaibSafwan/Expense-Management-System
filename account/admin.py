@@ -64,6 +64,10 @@ class FundTransferAdmin(BaseAdmin):
 			self.readonly_fields = ["from_account", "to_account", "amount", "description"]
 
 	def add_tabular_inline_according_to_user(self, user):
+		if user.is_superuser:
+			self.check_fund_transfer_validation = True
+			return None
+
 		if user.is_checker:
 			self.check_fund_transfer_validation = False
 			self.inlines = [FundCheckInline, ]
