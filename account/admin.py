@@ -32,7 +32,7 @@ class FundCheckInline(admin.TabularInline):
 
 class FundTransferAdmin(BaseAdmin):
 	form = FundTransferForm
-	list_display = ["id", "from_account", "to_account", "amount", "approved", "checked"]
+	list_display = ["id", "from_account", "to_account", "amount", "approved", "checked", "is_approved", "is_checked"]
 	fieldsets = (
 		('Accounts', {'fields': ('from_account', 'to_account', )}),
 		('Others', {'fields': ('amount', 'description')})

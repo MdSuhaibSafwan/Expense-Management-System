@@ -76,7 +76,11 @@ class FundTransfer(BaseModel):
 		return super().save(*args, **kwargs)
 
 	def is_approved(self):
-		obj = self.get_approval_response()
+		try:
+			obj = self.approved_obj
+		except Exception:
+			obj = self.get_approval_response()
+
 		if obj is None:
 			return False
 
@@ -86,7 +90,7 @@ class FundTransfer(BaseModel):
 		obj = self.get_approval_response()
 		if obj is None:
 			return None
-
+		self.approved_obj = obj
 		return str(obj.user)
 
 	def get_approval_response(self):
@@ -98,9 +102,13 @@ class FundTransfer(BaseModel):
 		return obj
 
 	def is_checked(self):
-		obj = self.get_checking_response()
+		try:
+			obj = self.checked_obj
+		except Exception as e:
+			obj = self.get_checking_response()
+		
 		if obj is None:
-			return False
+			return False	
 
 		return obj.is_checked
 
@@ -108,7 +116,8 @@ class FundTransfer(BaseModel):
 		obj = self.get_checking_response()
 		if obj is None:
 			return None	
-		
+
+		self.checked_obj = obj
 		return str(obj.user)
 
 	def get_checking_response(self):
