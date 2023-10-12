@@ -20,7 +20,7 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'account.apps.AccountConfig',
     'expense.apps.ExpenseConfig',
-    # 'bank.apps.BankConfig',
+    'fund_history.apps.FundHistoryConfig',
 
     'rest_framework',
     'rest_framework.authtoken',

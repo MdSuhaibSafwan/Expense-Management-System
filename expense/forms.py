@@ -1,4 +1,3 @@
-from typing import Any
 from django import forms
 from django.forms import ModelForm
 from .models import Expense
@@ -8,7 +7,7 @@ class ExpenseAdminForm(ModelForm):
 
     class Meta:
         model = Expense
-        exclude = ["user", "bank_cashout"]
+        exclude = ["user", ]
 
     def clean(self):
         data = super().clean()
@@ -23,6 +22,12 @@ class ExpenseAdminForm(ModelForm):
             "is_maker": "is_completed",
         }
         user_type = self.user.get_user_type()
+
+    def save(self, commit=True):
+        obj = super().save(commit=False)
+        obj.user = self.user
+        obj.save()
+        return obj
 
 
 class ExpenseAdminReportForm(forms.Form):

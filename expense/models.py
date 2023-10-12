@@ -34,6 +34,3 @@ class Expense(BaseModel):
     
     def total_cost(self):
         return self.cost
-
-    def bank_cashout_title(self):
-        return self.bank_cashout.title
