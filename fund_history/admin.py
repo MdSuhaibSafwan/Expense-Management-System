@@ -1,4 +1,9 @@
 from django.contrib import admin
 from .models import FundHistory
 
-admin.site.register(FundHistory)
+
+class FundHistoryAdmin(admin.ModelAdmin):
+	list_display = ["id", "amount", ]
+
+
+admin.site.register(FundHistory, FundHistoryAdmin)
