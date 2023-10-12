@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
 
-<form action="/admin/create-report/" method="POST">
+<form action="{% url 'expense-report-xl' %}" method="POST">
     {% csrf_token %}
     <li>
         <input type="date" name="date1"  style="background-color: #333333;color: #fff;border: none;padding: 4.5px 12px;border-radius: 14px;margin: 0;">

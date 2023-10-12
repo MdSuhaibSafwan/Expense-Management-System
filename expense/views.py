@@ -10,8 +10,8 @@ def create_xl_report_for_expense(request):
     form = ExpenseAdminReportForm(data=request.POST)
     if not form.is_valid():
         messages.error(request, message=form.error_text)
-        return redirect("/admin/expense/expense/", )
-    
+        return redirect("/expense/expense/", )
+
     date1 = form.cleaned_data.get("date1")
     date2 = form.cleaned_data.get("date2")
     qs = get_expense_from_dates(date1, date2)

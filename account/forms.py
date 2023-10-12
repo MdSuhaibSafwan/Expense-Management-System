@@ -35,7 +35,6 @@ class FundTransferForm(forms.ModelForm):
 			raise forms.ValidationError("Accounts Cannot transfer among themselves")
 
 		amount = data.get("amount")
-		print("Amount ", amount, from_account.get_current_balance())
 		if from_account.get_current_balance() < amount:
 			raise forms.ValidationError("Insufficient Balance")
 

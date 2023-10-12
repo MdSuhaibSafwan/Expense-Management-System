@@ -82,6 +82,13 @@ class FundTransfer(BaseModel):
 
 		return obj.is_approved
 
+	def approved(self):
+		obj = self.get_approval_response()
+		if obj is None:
+			return None
+
+		return str(obj.user)
+
 	def get_approval_response(self):
 		try:
 			obj = self.approval_response
@@ -96,6 +103,13 @@ class FundTransfer(BaseModel):
 			return False
 
 		return obj.is_checked
+
+	def checked(self):
+		obj = self.get_checking_response()
+		if obj is None:
+			return None	
+		
+		return str(obj.user)
 
 	def get_checking_response(self):
 		try:
