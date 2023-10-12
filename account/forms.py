@@ -113,7 +113,7 @@ class FundApproveFormSet(BaseInlineFormSet):
 
 		fund_approve_obj = getattr(fund_transfer_obj, "approval_response")
 		fund_approve_obj.user = user
-		fund_approve_obj.fund_checking_response = fund_check_obj
+		fund_approve_obj.fund_check = fund_check_obj
 		fund_approve_obj.save()
 
 		if not hasattr(fund_transfer_obj, "approval_response"):

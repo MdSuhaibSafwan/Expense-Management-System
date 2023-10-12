@@ -121,7 +121,7 @@ class FundApprove(BaseModel):
 	description = models.TextField()
 	is_approved = models.BooleanField()
 	fund_transfer = models.OneToOneField(FundTransfer, on_delete=models.PROTECT, related_name="approval_response")
-	fund_checking_response = models.OneToOneField(FundCheck, on_delete=models.PROTECT)
+	fund_check = models.OneToOneField(FundCheck, on_delete=models.PROTECT)
 
 	def __str__(self):
 		return str(self.id)

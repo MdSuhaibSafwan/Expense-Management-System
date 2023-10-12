@@ -2,7 +2,6 @@ from typing import Any
 from django import forms
 from django.forms import ModelForm
 from .models import Expense
-from bank.models import BankAccount, BankCashout
 
 
 class ExpenseAdminForm(ModelForm):
@@ -13,22 +12,7 @@ class ExpenseAdminForm(ModelForm):
 
     def clean(self):
         data = super().clean()
-        changed_data = self.changed_data
         return data
-    
-    def clean_cost(self):
-        cost = self.cleaned_data.get("cost")
-        bank_cashout_obj = BankCashout.objects.get_latest_approved_object()
-        if not bank_cashout_obj:
-            raise forms.ValidationError("Not Sufficient Balance")
-        remaining_total = bank_cashout_obj.cash - sum(list(bank_cashout_obj.expenses.all().values_list("cost", flat=True)))
-        if self.should_add_cost:
-            remaining_total += self.added_cost
-
-        if cost > remaining_total:
-            raise forms.ValidationError("Not sufficient balance")
-        
-        return cost
 
     def validate_changed_data(self):
         data = {
@@ -40,12 +24,6 @@ class ExpenseAdminForm(ModelForm):
         }
         user_type = self.user.get_user_type()
 
-    def save(self, commit=False):
-        obj = super().save(commit=False)
-        obj.user = self.user
-        obj.bank_cashout = self.bank_cashout
-        obj.save()
-        return obj
 
 class ExpenseAdminReportForm(forms.Form):
     error_text = "Please Provide date correctly"

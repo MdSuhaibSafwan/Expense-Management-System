@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from bank.models import BankCashout
+from account.models import Account
+from lib.models import BaseModel
 
 User = get_user_model()
 
@@ -19,16 +20,14 @@ class ExpenseManager(models.Manager):
     pass
 
 
-class Expense(models.Model):
+class Expense(BaseModel):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
-    bank_cashout = models.ForeignKey(BankCashout, on_delete=models.SET_NULL, null=True, related_name="expenses")
+    account = models.ForeignKey(Account, on_delete=models.PROTECT, )
     title = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     cost = models.FloatField()
     files = models.FileField(upload_to="expense/", null=True, blank=True)
-    date_created = models.DateTimeField(auto_now_add=True)
-    last_updated = models.DateTimeField(auto_now=True)
 
     objects = ExpenseManager()
 

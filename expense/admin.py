@@ -6,7 +6,6 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
 from django.http import HttpResponse
 from .utils import generate_excel_file_based_on_qs
-from bank.models import BankCashout
 
 
 class ExpenseAdmin(admin.ModelAdmin):
@@ -24,14 +23,6 @@ class ExpenseAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
-        form.user = request.user
-        form.should_add_cost = False
-        if obj:
-            form.added_cost = obj.cost
-            form.should_add_cost = True
-        if self.bank_cashout_obj:
-            form.bank_cashout = self.bank_cashout_obj
-
         return form
     
     def _generate_excel_file(self, request, queryset):
@@ -41,24 +32,12 @@ class ExpenseAdmin(admin.ModelAdmin):
         return response
     
     def add_view(self, request, form_url=None, extra_context=None):
-        bank_cashout_obj = BankCashout.objects.get_latest_approved_object()
-        self.bank_cashout_obj = bank_cashout_obj
-        
-        # if bank_cashout_obj.is_finished():
-        #     messages.error(request, "No more balance remaining")
-        #     return redirect("/admin/expense/expense/")
 
         return super().add_view(request, form_url, extra_context)
     
     def change_view(self, request, object_id, form_url=None, extra_context=None):
-        messages.error(request, "Expense Change is not possible")
-        return redirect("/admin/expense/expense/")
-        # bank_cashout_obj = BankCashout.objects.get_latest_approved_object()
-        # self.bank_cashout_obj = bank_cashout_obj
-        # return super().change_view(request, object_id, form_url, extra_context)
-    
-    def check_is_user_valid(self, user):
-        return (user.is_author) or (user.is_checker) or (user.is_maker)
+
+        return super().change_view(request, object_id, form_url, extra_context)
     
     def get_total_expense(self):
         qs = self.model.objects.all()
