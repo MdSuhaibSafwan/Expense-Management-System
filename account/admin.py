@@ -111,6 +111,7 @@ class FundTransferAdmin(BaseAdmin):
 
 	# def save_model(self, request, obj, form, change):
 	# 	print("OBJ ", obj)
+	
 
 class AccountAdmin(BaseAdmin):
 	list_display = ["account_no", "routing_no", "account_type", "opening_balance", "date_created"]
