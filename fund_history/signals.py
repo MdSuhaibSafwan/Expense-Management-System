@@ -21,6 +21,11 @@ def add_an_instruction_to_journal_for_expense(sender, instance, created, **kwarg
 @receiver(signal=fund_transfer_approved)
 def add_an_instruction_to_journal_for_account_fund_transfer(sender, instance, **kwargs):
 	content_type = ContentType.objects.get_for_model(instance.__class__)
-	fh_obj = FundHistory(object_id=instance.id, content_type=content_type, amount=instance.amount)
+	title = "Fund Transfer between accounts"
+	if not instance.from_account:
+		title = "Balance add on account"
+	description = title
+	fh_obj = FundHistory(object_id=instance.id, content_type=content_type, amount=instance.amount,
+			title=title, description=description)
 	fh_obj.transaction_code = instance.id
 	fh_obj.save()
