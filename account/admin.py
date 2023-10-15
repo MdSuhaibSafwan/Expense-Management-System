@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import AccountType, Account, FundTransfer, FundApprove, FundCheck
 from lib.admin import BaseAdmin
 from .forms import FundTransferForm, FundApproveForm, FundCheckForm, FundCheckFormSet, FundApproveFormSet
+from django.contrib import messages
 
 
 class FundApproveInline(admin.TabularInline):
@@ -41,8 +42,9 @@ class FundTransferAdmin(BaseAdmin):
 	add_fieldsets = fieldsets
 	check_fund_transfer_validation = True
 
-	def get_form(self, *args, **kwargs):
-		form = super().get_form(*args, **kwargs)
+	def get_form(self, request, obj=None, **kwargs):
+		form = super().get_form(request, obj=None, **kwargs)
+		self.obj = obj
 		form.action_view = self.action_view
 		form.check_validation = self.check_fund_transfer_validation
 		return form
@@ -53,11 +55,27 @@ class FundTransferAdmin(BaseAdmin):
 		self.add_readonly_fields_according_to_user(request.user)
 		return super().add_view(request, *args, **kwargs)
 
-	def change_view(self, request, *args, **kwargs):
+	def change_view(self, request, object_id, *args, **kwargs):
 		self.action_view = "change_view"
+		self.object_id = object_id
+		self.request = request
 		self.add_readonly_fields_according_to_user(request.user)
 		self.add_tabular_inline_according_to_user(request.user)
-		return super().change_view(request, *args, **kwargs)
+		return super().change_view(request, object_id, *args, **kwargs)
+
+	def get_object(self, request, object_id, from_field=None):
+		try:
+			obj = self.object
+			return obj
+		except Exception as e:
+			print(e)
+
+		try:
+			obj = FundTransfer.objects.get(id=object_id)
+		except ObjectDoesNotExist as e:
+			return None
+
+		return obj
 
 	def add_readonly_fields_according_to_user(self, user):
 		if not user.is_author:
@@ -73,8 +91,16 @@ class FundTransferAdmin(BaseAdmin):
 			self.inlines = [FundCheckInline, ]
 
 		if user.is_approver:
-			self.check_fund_transfer_validation = False
-			self.inlines = [FundApproveInline, ]
+			object_id = self.object_id
+			fund_transfer_obj = self.get_object(self.request, object_id)
+			if fund_transfer_obj is None:
+				return None
+
+			if not fund_transfer_obj.is_checked():
+				messages.error(self.request, "Fund Transfer is not Checked")
+			else:
+				self.check_fund_transfer_validation = False
+				self.inlines = [FundApproveInline, ]
 
 	# def save_formset(self, request, obj, formset, change):
 	# 	instances = formset.save(commit=True)
