@@ -63,7 +63,7 @@ class Account(BaseModel):
 class FundTransfer(BaseModel):
 	amount = models.FloatField()
 	description = models.TextField()
-	from_account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="fund_transfer_from")
+	from_account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True, related_name="fund_transfer_from")
 	to_account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="fund_transfer_to")
 
 	def __str__(self):
