@@ -63,6 +63,7 @@ class Account(BaseModel):
 class FundTransfer(BaseModel):
 	amount = models.FloatField()
 	description = models.TextField()
+	checker_assignee = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="fund_transfer_checked")
 	from_account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True, related_name="fund_transfer_from")
 	to_account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="fund_transfer_to")
 
@@ -134,6 +135,7 @@ class FundCheck(BaseModel):
 	description = models.TextField()
 	is_checked = models.BooleanField()
 	fund_transfer = models.OneToOneField(FundTransfer, on_delete=models.PROTECT, related_name="checked_response")
+	approver_assignee = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="fund_checked")
 
 	def __str__(self):
 		return str(self.id)
