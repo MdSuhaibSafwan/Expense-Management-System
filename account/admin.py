@@ -108,16 +108,6 @@ class FundTransferAdmin(BaseAdmin):
 					messages.error(self.request, "sorry you're not obliged to approve this transfer")
 					return None
 				self.inlines = [FundApproveInline, ]
-
-	# def save_formset(self, request, obj, formset, change):
-	# 	instances = formset.save(commit=True)
-	# 	print("Request ", request)
-	# 	print("Obj ", obj)
-	# 	print("Change ", change)
-	# 	print("Instance ", instances)
-
-	# def save_model(self, request, obj, form, change):
-	# 	print("OBJ ", obj)
 	
 
 class AccountAdmin(BaseAdmin):
