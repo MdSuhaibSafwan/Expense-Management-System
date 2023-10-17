@@ -22,7 +22,7 @@ class FundCheckInline(admin.TabularInline):
 	model = FundCheck
 	form = FundCheckForm
 	formset = FundCheckFormSet
-	fields = ["description", "is_checked"]
+	fields = ["description", "is_checked", "approver_assignee"]
 
 	def get_formset(self, request, obj=None, *args, **kwargs):
 		formset = super().get_formset(request, *args, **kwargs)
@@ -36,7 +36,8 @@ class FundTransferAdmin(BaseAdmin):
 	list_display = ["id", "from_account", "to_account", "amount", "approved", "checked", "is_approved", "is_checked"]
 	fieldsets = (
 		('Accounts', {'fields': ('from_account', 'to_account', )}),
-		('Others', {'fields': ('amount', 'description')})
+		('Others', {'fields': ('amount', 'description')}),
+		("Assigner", {'fields': ("checker_assignee", )})
 	)
 
 	add_fieldsets = fieldsets
@@ -51,7 +52,6 @@ class FundTransferAdmin(BaseAdmin):
 
 	def add_view(self, request, *args, **kwargs):
 		self.action_view = "add_view"
-		self.add_tabular_inline_according_to_user(request.user)
 		self.add_readonly_fields_according_to_user(request.user)
 		return super().add_view(request, *args, **kwargs)
 
@@ -79,27 +79,34 @@ class FundTransferAdmin(BaseAdmin):
 
 	def add_readonly_fields_according_to_user(self, user):
 		if not user.is_author:
-			self.readonly_fields = ["from_account", "to_account", "amount", "description"]
+			self.readonly_fields = ["from_account", "to_account", "amount", "description", "checker_assignee"]
 
 	def add_tabular_inline_according_to_user(self, user):
+		obj = self.get_object(self.request, self.object_id)
 		if user.is_superuser:
 			self.check_fund_transfer_validation = True
 			return None
 
 		if user.is_checker:
 			self.check_fund_transfer_validation = False
+			if (obj.checker_assignee != user) and (obj.checker_assignee is not None):
+				messages.error(self.request, "sorry you are not obliged to check this transfer")
+				return None
 			self.inlines = [FundCheckInline, ]
 
 		if user.is_approver:
-			object_id = self.object_id
-			fund_transfer_obj = self.get_object(self.request, object_id)
+			fund_transfer_obj = self.get_object(self.request, self.object_id)
 			if fund_transfer_obj is None:
 				return None
 
-			if not fund_transfer_obj.is_checked():
+			checked_obj = fund_transfer_obj.checked_response
+			if not checked_obj.is_checked:
 				messages.error(self.request, "Fund Transfer is not Checked")
 			else:
 				self.check_fund_transfer_validation = False
+				if (checked_obj.approver_assignee != user) and (checked_obj.approver_assignee is not None):
+					messages.error(self.request, "sorry you're not obliged to approve this transfer")
+					return None
 				self.inlines = [FundApproveInline, ]
 
 	# def save_formset(self, request, obj, formset, change):

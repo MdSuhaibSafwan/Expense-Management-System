@@ -41,6 +41,11 @@ class FundTransferForm(forms.ModelForm):
 	
 			self.validate_from_account(data)
 
+		assigned_user = data.get("checker_assignee", None)
+
+		if assigned_user is not None:
+			self.validate_checker_assignee(assigned_user)
+
 		return data
 
 	def validate_from_account(self, data):
@@ -70,6 +75,12 @@ class FundTransferForm(forms.ModelForm):
 
 		return True
 
+	def validate_checker_assignee(self, user):
+		if not user.is_checker:
+			self.add_error("checker_assignee", "User is not a Checker")
+
+		return user
+
 
 class FundCheckFormSet(BaseInlineFormSet):
 	def save_new_objects(self, commit=True):
@@ -90,6 +101,15 @@ class FundCheckFormSet(BaseInlineFormSet):
 		fund_check_obj.user = user
 		fund_check_obj.save()
 		return saved_instances
+
+	def clean(self):
+		super().clean()
+		for form in self.forms:
+			approver_assignee = form.cleaned_data.get("approver_assignee", None)
+			if approver_assignee is not None:
+				if not approver_assignee.is_approver:
+					raise forms.ValidationError("User should be an Approver")
+
 
 
 
