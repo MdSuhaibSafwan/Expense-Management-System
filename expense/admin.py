@@ -1,4 +1,4 @@
-from django.contrib import admin
+import custom_admin as admin
 from django.contrib import messages
 from .models import Expense, Category
 from .forms import ExpenseAdminForm

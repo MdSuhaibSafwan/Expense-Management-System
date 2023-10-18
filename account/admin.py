@@ -1,4 +1,4 @@
-from django.contrib import admin
+import custom_admin as admin
 from .models import AccountType, Account, FundTransfer, FundApprove, FundCheck
 from lib.admin import BaseAdmin
 from .forms import FundTransferForm, FundApproveForm, FundCheckForm, FundCheckFormSet, FundApproveFormSet
