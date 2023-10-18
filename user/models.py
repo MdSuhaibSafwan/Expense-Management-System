@@ -1,8 +1,10 @@
+import pyotp
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.hashers import make_password
 from django.apps import apps
+from lib.models import create_hex_token, BaseModel
 
 
 class UserManager(UserManager):
@@ -91,3 +93,26 @@ class User(AbstractUser):
     @property
     def is_approver(self):
         return self.has_perm("account.add_fundapprove")
+
+    def has_2fa_token(self):
+        return self.auth_tokens_2fa.exists()
+
+
+class User2FAAuthManager(models.Manager):
+
+    def get_latest_token_for_user(self, user):
+        token_obj = user.auth_tokens_2fa.first()
+        return token_obj
+
+
+class User2FAAuth(BaseModel):
+    id = models.UUIDField(primary_key=True, editable=False, default=create_hex_token)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="auth_tokens_2fa")
+    token = models.CharField(max_length=255, default=pyotp.random_base32)
+
+    objects = User2FAAuthManager()
+
+    class Meta:
+        ordering = ["-date_created", ]
+        unique_together = [["user", "token"], ]
+        verbose_name_plural = "User 2Factor Auth"

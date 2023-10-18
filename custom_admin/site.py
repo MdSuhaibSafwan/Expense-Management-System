@@ -1,9 +1,9 @@
 from django.contrib.admin import AdminSite
 
 
-class MyAdminSite(AdminSite):
+class CustomAdminSite(AdminSite):
     # do some magic
     pass        
 
 
-site = MyAdminSite()
+site = CustomAdminSite()

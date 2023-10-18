@@ -2,7 +2,7 @@ import custom_admin as admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-
+from .models import User2FAAuth
 from .forms import UserAdminCreationForm, UserAdminChangeForm
 
 User = get_user_model()
@@ -30,5 +30,9 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ['email']
     ordering = ['email']
 
+class User2FAAuthAdmin(admin.ModelAdmin):
+    list_display = ["id", "user", "token"]
+
 
 admin.site.register(User, UserAdmin)
+admin.site.register(User2FAAuth, User2FAAuthAdmin)
