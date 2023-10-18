@@ -1,4 +1,4 @@
-from django.contrib import admin
+import custom_admin as admin
 from django.urls import path, include
 
 urlpatterns = [
