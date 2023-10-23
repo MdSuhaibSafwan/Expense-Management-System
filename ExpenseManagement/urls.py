@@ -1,7 +1,6 @@
-import custom_admin as admin
 from django.urls import path, include
+from admin_site import admin
 
 urlpatterns = [
-    path("", include("expense.urls")),
-    path("", admin.site.urls),
+	path("admin/", admin.site.urls)    
 ]

@@ -1,4 +1,6 @@
 import pyotp
+import qrcode
+import qrcode.image.svg
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.utils.translation import gettext_lazy as _
@@ -116,3 +118,20 @@ class User2FAAuth(BaseModel):
         ordering = ["-date_created", ]
         unique_together = [["user", "token"], ]
         verbose_name_plural = "User 2Factor Auth"
+
+    def is_token_valid(self, token):
+        totp = pyotp.TOTP(self.token)
+        return totp.verify(token)
+
+    def generate_provisioning_uri(self):
+        totp = pyotp.totp.TOTP(self.token)
+        uri = totp.provisioning_uri(name=self.user.email, issuer_name="Google Authenticator")
+        return uri
+
+    def generate_qr_code(self):
+        qr_uri = self.generate_provisioning_uri()
+        qr_code_image = qrcode.make(
+            qr_uri,
+            image_factory=qrcode.image.svg.SvgPathImage
+        )
+        return qr_code_image.to_string().decode("utf-8")
