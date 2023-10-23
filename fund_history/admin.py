@@ -1,4 +1,4 @@
-import custom_admin as admin
+from admin_site import admin
 from .models import FundHistory
 
 

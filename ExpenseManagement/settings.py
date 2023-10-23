@@ -18,10 +18,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'admin_site.apps.AdminSiteConfig',
 
-    # 'user.apps.UserConfig',
-    # 'account.apps.AccountConfig',
-    # 'expense.apps.ExpenseConfig',
-    # 'fund_history.apps.FundHistoryConfig',
+    'user.apps.UserConfig',
+    'account.apps.AccountConfig',
+    'expense.apps.ExpenseConfig',
+    'fund_history.apps.FundHistoryConfig',
 
     # 'rest_framework',
     # 'rest_framework.authtoken',
@@ -79,7 +79,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# AUTH_USER_MODEL = "user.User"
+AUTH_USER_MODEL = "user.User"
 
 LANGUAGE_CODE = 'en-us'
 
