@@ -5,6 +5,7 @@ from .models import User2FAAuth
 
 class TwoFactorAuthSetupView(DetailView):
 	template_name = "admin/two_fa/setup.html"
+	context_object_name = "object"
 
 	def get(self, request, *args, **kwargs):
 		self.request = request
@@ -23,4 +24,6 @@ class TwoFactorAuthSetupView(DetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
+		context["otp_secret"] = self.object.token
+		context["qr_code"] = self.object.generate_qr_code()
 		return context
