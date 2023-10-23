@@ -17,6 +17,14 @@ class FundCheckForm(forms.ModelForm):
 		# fields = "__all__"
 		exclude = ["fund_transfer", "user"]
 
+	def clean(self):
+		data = super().clean()
+		approver_assignee = data.get("approver_assignee")
+		if not approver_assignee.is_approver:
+			self.add_error("approver_assignee", "User is not an approver")
+
+		return data
+
 
 
 class FundTransferForm(forms.ModelForm):

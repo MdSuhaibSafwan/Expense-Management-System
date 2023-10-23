@@ -3,8 +3,10 @@ from django.views.generic import DetailView
 from .models import FundTransfer
 from .forms import FundCheckForm, FundApproveForm
 from django.contrib import messages
+from .decorators import user_checker_required, user_approver_required
 
 
+@user_checker_required
 def fund_transfer_check_admin_view(request, pk):
 	ft_obj = get_object_or_404(FundTransfer, pk=pk)
 	ft_checked_obj = ft_obj.get_checking_response()
@@ -32,6 +34,7 @@ def fund_transfer_check_admin_view(request, pk):
 	return render(request, "admin/account/fund_check_approve.html", context)
 
 
+@user_approver_required
 def fund_transfer_approve_admin_view(request, pk):
 	ft_obj = get_object_or_404(FundTransfer, pk=pk)
 	ft_approved_obj = ft_obj.get_approval_response()
@@ -53,8 +56,8 @@ def fund_transfer_approve_admin_view(request, pk):
 			obj.fund_check = ft_obj.get_checking_response()
 			obj.save()
 			return redirect("/")
-			
-		messages.error(request, form.errors)
+
+		messages.error(request, "Please Check the following issues")
 
 	context["form"] = form
 
