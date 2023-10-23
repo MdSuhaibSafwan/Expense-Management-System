@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.contrib.admin import *
 from user.views import TwoFactorAuthSetupView
-from django.urls import path
+# from account.views import FundTransferCheckOtpDetailView
+from django.urls import path, include
 from django.views.decorators.common import no_append_slash
 from django.urls.resolvers import URLPattern, URLResolver
 from django.contrib.auth.decorators import user_passes_test
@@ -12,8 +13,16 @@ from django.shortcuts import redirect
 class AdminSiteConfig(admin.AdminSite):
 	site_header = "Expense Management"
 
-	def get_urls(self, *args, **kwargs):
+	def get_all_urls(self, *args, **kwargs):
 		urls = super().get_urls(*args, **kwargs)
+		urls = [
+			path("account/fundtransfer/<int:pk>/", include("account.urls"), )
+		] + urls
+
+		return urls
+
+	def get_urls(self, *args, **kwargs):
+		urls = self.get_all_urls(*args, **kwargs)
 		urls_list = []
 		for url in urls:
 			if isinstance(url, URLPattern):
