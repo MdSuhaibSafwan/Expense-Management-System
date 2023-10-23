@@ -99,6 +99,10 @@ class User(AbstractUser):
     def has_2fa_token(self):
         return self.auth_tokens_2fa.exists()
 
+    def has_valid_2fa(self):
+
+        return False
+
 
 class User2FAAuthManager(models.Manager):
 

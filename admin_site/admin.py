@@ -4,17 +4,16 @@ from user.views import TwoFactorAuthSetupView
 from django.urls import path
 from django.views.decorators.common import no_append_slash
 from django.urls.resolvers import URLPattern, URLResolver
+from django.contrib.auth.decorators import user_passes_test
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 
 
 class AdminSiteConfig(admin.AdminSite):
 	site_header = "Expense Management"
 
 	def get_urls(self, *args, **kwargs):
-		previous_urls = super().get_urls(*args, **kwargs)
-		urls = [
-			path("setup-2fa/", self.admin_view(TwoFactorAuthSetupView.as_view()), name="setup_2fa")
-		] + previous_urls
-
+		urls = super().get_urls(*args, **kwargs)
 		urls_list = []
 		for url in urls:
 			if isinstance(url, URLPattern):
@@ -36,11 +35,20 @@ class AdminSiteConfig(admin.AdminSite):
 					)
 				)
 
+		urls_list = [
+			path("setup-2fa/", self.admin_view(TwoFactorAuthSetupView.as_view()), name="setup_2fa")
+		] + urls_list
+
 		return urls_list
 
 	def two_fa_decorator(self, view):
-		print("Inside decorator ", view)
-		return view
+		def wrapper(request, *args, **kwargs):
+			user = request.user
+			if user.has_valid_2fa():
+				return view(request, *args, **kwargs)
 
+			return redirect("/setup-2fa/")
+
+		return wrapper
 
 site = AdminSiteConfig(name="Expense Management")
