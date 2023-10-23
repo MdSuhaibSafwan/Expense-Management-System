@@ -7,7 +7,7 @@ class FundApproveForm(forms.ModelForm):
 
 	class Meta:
 		model = FundApprove
-		exclude = ["fund_transfer", "user", "fund_check"]
+		exclude = ["fund_transfer", "user", "fund_check", "is_2fa_verified"]
 
 
 class FundCheckForm(forms.ModelForm):
@@ -15,7 +15,7 @@ class FundCheckForm(forms.ModelForm):
 	class Meta:
 		model = FundCheck
 		# fields = "__all__"
-		exclude = ["fund_transfer", "user"]
+		exclude = ["fund_transfer", "user", "is_2fa_verified"]
 
 	def clean(self):
 		data = super().clean()

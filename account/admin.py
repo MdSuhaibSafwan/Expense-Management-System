@@ -115,15 +115,17 @@ class AccountAdmin(BaseAdmin):
 
 
 class AccountTypeAdmin(BaseAdmin):
-	list_display = ["id", "name"]
+	list_display = ["id", "name", ]
 
 
 class FundApproveAdmin(BaseAdmin):
-	pass
+	list_display = ["id", "user", "fund_transfer", "is_approved", "is_2fa_verified"]
+
 
 
 class FundCheckAdmin(BaseAdmin):
-	pass
+	list_display = ["id", "user", "fund_transfer", "is_checked", "is_2fa_verified"]
+
 
 
 admin.site.register(Account, AccountAdmin)

@@ -137,6 +137,7 @@ class FundCheck(BaseModel):
 	is_checked = models.BooleanField()
 	fund_transfer = models.OneToOneField(FundTransfer, on_delete=models.PROTECT, related_name="checked_response")
 	approver_assignee = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="fund_checked")
+	is_2fa_verified = models.BooleanField(default=False)
 
 	def __str__(self):
 		return str(self.id)
@@ -148,6 +149,7 @@ class FundApprove(BaseModel):
 	is_approved = models.BooleanField()
 	fund_transfer = models.OneToOneField(FundTransfer, on_delete=models.PROTECT, related_name="approval_response")
 	fund_check = models.OneToOneField(FundCheck, on_delete=models.PROTECT)
+	is_2fa_verified = models.BooleanField(default=False)
 
 	def __str__(self):
 		return str(self.id)
