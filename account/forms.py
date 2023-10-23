@@ -7,14 +7,15 @@ class FundApproveForm(forms.ModelForm):
 
 	class Meta:
 		model = FundApprove
-		fields = "__all__"
+		exclude = ["fund_transfer", "user", "fund_check"]
 
 
 class FundCheckForm(forms.ModelForm):
 
 	class Meta:
 		model = FundCheck
-		fields = "__all__"
+		# fields = "__all__"
+		exclude = ["fund_transfer", "user"]
 
 
 

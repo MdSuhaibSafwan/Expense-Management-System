@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import DetailView
 from .models import FundTransfer
 from .forms import FundCheckForm, FundApproveForm
@@ -19,8 +19,11 @@ def fund_transfer_check_admin_view(request, pk):
 			form.instance = ft_checked_obj
 
 		if form.is_valid():
+			obj = form.save(commit=False)
+			obj.user = request.user
+			obj.fund_transfer = ft_obj
+			obj.save()
 			messages.success(request, "Verify your otp")
-			form.save()
 			return redirect("/")
 		messages.error(request, form.errors)
 
@@ -44,8 +47,13 @@ def fund_transfer_approve_admin_view(request, pk):
 
 		if form.is_valid():
 			messages.success(request, "Verify your otp")
-			form.save()
+			obj = form.save(commit=False)
+			obj.user = request.user
+			obj.fund_transfer = ft_obj
+			obj.fund_check = ft_obj.get_checking_response()
+			obj.save()
 			return redirect("/")
+			
 		messages.error(request, form.errors)
 
 	context["form"] = form
