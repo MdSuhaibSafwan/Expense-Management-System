@@ -100,8 +100,7 @@ class User(AbstractUser):
         return self.auth_tokens_2fa.exists()
 
     def has_valid_2fa(self):
-
-        return False
+        return self.auth_tokens_2fa.exists()
 
 
 class User2FAAuthManager(models.Manager):

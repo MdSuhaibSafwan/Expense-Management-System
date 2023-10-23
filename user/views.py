@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import DetailView
 from .models import User2FAAuth
 
@@ -27,3 +27,12 @@ class TwoFactorAuthSetupView(DetailView):
 		context["otp_secret"] = self.object.token
 		context["qr_code"] = self.object.generate_qr_code()
 		return context
+
+	def post(self, request, *args, **kwargs):
+		otp = self.request.POST.get("otp", None)
+		qr_obj = self.get_object()
+		is_valid = qr_obj.is_token_valid(otp)
+		if not is_valid:
+			context = self.get_context_data(object=qr_obj)
+			return self.render_to_response(context)
+		return redirect("/")

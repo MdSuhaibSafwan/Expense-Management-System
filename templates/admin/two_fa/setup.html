@@ -1,8 +1,8 @@
 {% extends "admin/login.html" %}
 
 {% block content %}
-  <form action="" method="get">
-
+  <form method="POST">
+    {% csrf_token %}
     {% if otp_secret %}
 
       <p><strong>OTP Secret:</strong></p>
@@ -16,6 +16,7 @@
 
     <div class="submit-row">
       <input type="submit" value="Generate">
+      <input placeholder="Type Your Code" name="otp">
     </div>
   </form>
 

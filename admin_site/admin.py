@@ -17,6 +17,10 @@ class AdminSiteConfig(admin.AdminSite):
 		urls_list = []
 		for url in urls:
 			if isinstance(url, URLPattern):
+				if (url.name == "login") or (url.name == "logout"):
+					urls_list.append(url)
+					continue
+
 				urls_list.append(
 					URLPattern(
 						pattern=url.pattern, 
@@ -44,6 +48,9 @@ class AdminSiteConfig(admin.AdminSite):
 	def two_fa_decorator(self, view):
 		def wrapper(request, *args, **kwargs):
 			user = request.user
+			if not user.is_authenticated:
+				return redirect("/login/")
+
 			if user.has_valid_2fa():
 				return view(request, *args, **kwargs)
 
