@@ -3,14 +3,18 @@ from django.views.generic import DetailView
 from .models import FundTransfer, FundCheck, FundApprove
 from .forms import FundCheckForm, FundApproveForm
 from django.contrib import messages
-from .decorators import user_checker_required, user_approver_required
+from .decorators import (user_checker_required, user_approver_required, 
+		fund_transfer_checked_required, redirect_to_verification_if_fund_transfer_checked)
 from user.models import User2FAAuth
 
 
 @user_checker_required
-def fund_transfer_check_admin_view(request, pk):
+@redirect_to_verification_if_fund_transfer_checked
+def fund_transfer_check_admin_view(request, pk, ft_checked_obj=None):
 	ft_obj = get_object_or_404(FundTransfer, pk=pk)
-	ft_checked_obj = ft_obj.get_checking_response()
+	if not ft_checked_obj:
+		ft_checked_obj = ft_obj.get_checking_response()
+	
 	form = FundCheckForm()
 	context = {}
 	if ft_checked_obj:
@@ -36,6 +40,7 @@ def fund_transfer_check_admin_view(request, pk):
 
 
 @user_approver_required
+@fund_transfer_checked_required
 def fund_transfer_approve_admin_view(request, pk):
 	ft_obj = get_object_or_404(FundTransfer, pk=pk)
 	ft_approved_obj = ft_obj.get_approval_response()
@@ -65,10 +70,13 @@ def fund_transfer_approve_admin_view(request, pk):
 	return render(request, "admin/account/fund_check_approve.html", context)
 
 
+@user_checker_required
 def verify_otp_for_fund_check(request, pk):
 	context = {}
 	ft_obj = get_object_or_404(FundTransfer, pk=pk)
 	fc_obj = ft_obj.get_checking_response()
+	if fc_obj is None:
+		return redirect("/")
 	user_2fa_obj, created = User2FAAuth.objects.get_or_create(user=request.user)
 
 	if request.method == 'POST':
@@ -85,10 +93,13 @@ def verify_otp_for_fund_check(request, pk):
 	return render(request, "admin/two_fa/setup.html", context)
 
 
+@user_approver_required
 def verify_otp_for_fund_approve(request, pk):
 	context = {}
 	ft_obj = get_object_or_404(FundTransfer, pk=pk)
 	fa_obj = ft_obj.get_approval_response()
+	if fa_obj is None:
+		return redirect("/")
 
 	user_2fa_obj, created = User2FAAuth.objects.get_or_create(user=request.user)
 

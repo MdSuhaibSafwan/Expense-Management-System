@@ -32,6 +32,7 @@ class FundCheckInline(admin.TabularInline):
 
 
 class FundTransferAdmin(BaseAdmin):
+	change_form_template = "admin/account/change_fund_transfer.html"
 	form = FundTransferForm
 	list_display = ["id", "from_account", "to_account", "amount", "approved", "checked", "is_approved", "is_checked"]
 	fieldsets = (
