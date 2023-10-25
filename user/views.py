@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic import DetailView
 from .models import User2FAAuth
+from django.contrib import messages
 
 
 class TwoFactorAuthSetupView(DetailView):
@@ -33,6 +34,10 @@ class TwoFactorAuthSetupView(DetailView):
 		qr_obj = self.get_object()
 		is_valid = qr_obj.is_token_valid(otp)
 		if not is_valid:
+			messages.error(request, "Invalid Token Provided")
 			context = self.get_context_data(object=qr_obj)
 			return self.render_to_response(context)
+
+		qr_obj.is_verified = True
+		qr_obj.save()
 		return redirect("/")

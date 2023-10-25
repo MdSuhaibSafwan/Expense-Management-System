@@ -100,7 +100,14 @@ class User(AbstractUser):
         return self.auth_tokens_2fa.exists()
 
     def has_valid_2fa(self):
-        return self.auth_tokens_2fa.exists()
+        two_fa = self.auth_tokens_2fa.all()
+        if not two_fa.exists():
+            return False
+            
+        for i in two_fa:
+            if not(i.is_verified):
+                return False
+        return True
 
 
 class User2FAAuthManager(models.Manager):
@@ -114,7 +121,7 @@ class User2FAAuth(BaseModel):
     id = models.UUIDField(primary_key=True, editable=False, default=create_hex_token)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="auth_tokens_2fa")
     token = models.CharField(max_length=255, default=pyotp.random_base32)
-
+    is_verified = models.BooleanField(default=False)
     objects = User2FAAuthManager()
 
     class Meta:
