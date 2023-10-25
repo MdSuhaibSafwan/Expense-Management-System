@@ -9,6 +9,17 @@ class FundApproveForm(forms.ModelForm):
 		model = FundApprove
 		exclude = ["fund_transfer", "user", "fund_check", "is_2fa_verified"]
 
+	def clean(self):
+		data = super().clean()
+		self.validate_fund_check()
+		return data
+
+	def validate_fund_check(self):
+		if self.fc_obj.approver_assignee is None:
+			return True
+
+		return self.fc_obj.approver_assignee == self.user
+
 
 class FundCheckForm(forms.ModelForm):
 
@@ -20,8 +31,9 @@ class FundCheckForm(forms.ModelForm):
 	def clean(self):
 		data = super().clean()
 		approver_assignee = data.get("approver_assignee")
-		if not approver_assignee.is_approver:
-			self.add_error("approver_assignee", "User is not an approver")
+		if approver_assignee:
+			if not approver_assignee.is_approver:
+				self.add_error("approver_assignee", "User is cannot an approver")
 
 		return data
 

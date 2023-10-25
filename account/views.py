@@ -60,6 +60,10 @@ def fund_transfer_approve_admin_view(request, pk, ft_obj=None, fc_obj=None, ft_a
 
 	if request.method == "POST":
 		form = FundApproveForm(request.POST)
+		form.user = request.user
+		form.ft_obj = ft_obj
+		form.fc_obj = fc_obj
+
 		if ft_approved_obj:
 			form.instance = ft_approved_obj
 
@@ -112,6 +116,7 @@ def verify_otp_for_fund_approve(request, pk):
 	ft_obj = get_object_or_404(FundTransfer, pk=pk)
 	fa_obj = ft_obj.get_approval_response()
 	if fa_obj is None:
+		messages.error(request, "Invalid url Provided")
 		return redirect("/")
 
 	user_2fa_obj, created = User2FAAuth.objects.get_or_create(user=request.user)
@@ -123,7 +128,7 @@ def verify_otp_for_fund_approve(request, pk):
 			fa_obj.is_2fa_verified = True
 			fa_obj.save()
 			messages.success(request, "Fund has been approved")
-			return redirect(f"/account/fundtransfer/{ft_obj.pk}/approve/verify-otp/")
+			return redirect("/")
 	
 		messages.error(request, "Invalid token provided")
 
