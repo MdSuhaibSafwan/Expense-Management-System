@@ -11,7 +11,7 @@ User = get_user_model()
 class UserAdmin(BaseUserAdmin):
     form = UserAdminChangeForm
     add_form = UserAdminCreationForm
-    list_display = ['email', 'is_author', 'is_checker', 'is_approver', 'is_active', 'is_staff', 'is_superuser']
+    list_display = ['email', 'has_valid_2fa', 'is_author', 'is_checker', 'is_approver', 'is_active', 'is_staff', 'is_superuser']
     list_filter = ['is_superuser', 'is_staff', 'is_active']
 
     fieldsets = (
@@ -32,7 +32,7 @@ class UserAdmin(BaseUserAdmin):
 
 
 class User2FAAuthAdmin(admin.ModelAdmin):
-    list_display = ["id", "user", "token"]
+    list_display = ["id", "user", "token", "is_verified"]
 
 
 admin.site.register(User, UserAdmin)
