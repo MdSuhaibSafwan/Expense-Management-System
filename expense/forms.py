@@ -1,9 +1,24 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Expense
+from .models import Expense, Category
 
 
-CLASS_NAME = "form-control"
+class CategoryAdminForm(ModelForm):
+
+    class Meta:
+        model = Category
+        fields = "__all__"
+
+        widgets = {
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+            }),
+
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+        }
+
 
 class ExpenseAdminForm(ModelForm):
 
@@ -11,7 +26,29 @@ class ExpenseAdminForm(ModelForm):
         model = Expense
         exclude = ["user", ]
         widgets = {
-            'description': forms.Textarea(attrs={'class': CLASS_NAME})
+            'category': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+
+            'account': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+            }),
+            
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            
+            'cost': forms.NumberInput(attrs={
+                'class': 'form-control',
+            }),
+            
+            'files': forms.FileInput(attrs={
+                'class': 'form-control',
+            })
         }
 
     def clean(self):

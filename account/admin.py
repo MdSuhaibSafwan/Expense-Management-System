@@ -1,7 +1,8 @@
 from admin_site import admin
 from .models import AccountType, Account, FundTransfer, FundApprove, FundCheck
 from lib.admin import BaseAdmin
-from .forms import FundTransferForm, FundApproveForm, FundCheckForm, FundCheckFormSet, FundApproveFormSet
+from .forms import FundTransferForm, FundApproveForm, FundCheckForm, FundCheckFormSet, FundApproveFormSet, \
+	AccountTypeForm, AccountForm
 from django.contrib import messages
 
 
@@ -32,7 +33,7 @@ class FundCheckInline(admin.TabularInline):
 
 
 class FundTransferAdmin(BaseAdmin):
-	change_form_template = "admin/account/change_fund_transfer.html"
+	# change_form_template = "admin/account/change_fund_transfer.html"
 	form = FundTransferForm
 	list_display = ["id", "from_account", "to_account", "amount", "approved", "checked", "is_approved", "is_checked"]
 	fieldsets = (
@@ -112,11 +113,13 @@ class FundTransferAdmin(BaseAdmin):
 	
 
 class AccountAdmin(BaseAdmin):
-	list_display = ["account_no", "routing_no", "account_type", "opening_balance", "date_created"]
+	list_display = ["account_no", "routing_no", "name", "account_type", "opening_balance", "date_created"]
+	form = AccountForm
 
 
 class AccountTypeAdmin(BaseAdmin):
 	list_display = ["id", "name", ]
+	form = AccountTypeForm
 
 
 class FundApproveAdmin(BaseAdmin):

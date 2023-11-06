@@ -5,7 +5,7 @@
     {% endif %}
     {% for line in fieldset %}
         <div class="form-row{% if line.fields|length == 1 and line.errors %} errors{% endif %}{% if not line.has_visible_field %} hidden{% endif %}{% for field in line %}{% if field.field.name %} field-{{ field.field.name }}{% endif %}{% endfor %}">
-            {% if line.fields|length == 1 %}{{ line.errors }}{% else %}<div class="flex-container form-multiline">{% endif %}
+            <div class="flex-container form-multiline">
             {% for field in line %}
                 <div>
                     {% if not line.fields|length == 1 and not field.is_readonly %}{{ field.errors }}{% endif %}
@@ -30,5 +30,6 @@
             {% endfor %}
             {% if not line.fields|length == 1 %}</div>{% endif %}
         </div>
+            {% if line.fields|length == 1 %}{{ line.errors }}{% endif %}    
     {% endfor %}
 </fieldset>

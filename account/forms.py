@@ -1,5 +1,5 @@
 from django import forms
-from .models import FundTransfer, FundApprove, FundCheck
+from .models import FundTransfer, FundApprove, FundCheck, AccountType, Account
 from django.forms.models import BaseInlineFormSet 
 
 
@@ -44,6 +44,13 @@ class FundTransferForm(forms.ModelForm):
 	class Meta:
 		model = FundTransfer
 		fields = "__all__"
+		widgets = {
+			'from_account': forms.Select(attrs={'class': 'form-control'}),
+			'to_account': forms.Select(attrs={'class': 'form-control'}),
+			'checker_assignee': forms.Select(attrs={'class': 'form-control'}),
+			'amount': forms.NumberInput(attrs={'class': 'form-control'}),
+			'description': forms.Textarea(attrs={'class': 'form-control'}),
+		}
 
 	def clean(self):
 		data = super().clean()
@@ -169,3 +176,30 @@ class FundApproveFormSet(BaseInlineFormSet):
 
 		return saved_instances
 
+
+class AccountForm(forms.ModelForm):
+
+	class Meta:
+		model = Account
+		fields = "__all__"
+		exclude = ["date_created"]
+		widgets = {
+			'name': forms.TextInput(attrs={'class': 'form-control'}),
+			'account_no': forms.TextInput(attrs={'class': 'form-control'}),
+			'routing_no': forms.TextInput(attrs={'class': 'form-control'}),
+			'opening_balance': forms.NumberInput(attrs={'class': 'form-control'}),
+			'account_type': forms.Select(attrs={'class': 'form-control'}),
+		}
+
+
+
+class AccountTypeForm(forms.ModelForm):
+
+	class Meta:
+		model = AccountType
+		fields = "__all__"
+		widgets = {
+			"name": forms.TextInput(attrs={
+				'class': 'form-control',
+			})
+		}

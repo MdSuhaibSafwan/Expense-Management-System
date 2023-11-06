@@ -1,7 +1,7 @@
 from admin_site import admin
 from django.contrib import messages
 from .models import Expense, Category
-from .forms import ExpenseAdminForm
+from .forms import ExpenseAdminForm, CategoryAdminForm
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
 from django.http import HttpResponse
@@ -10,6 +10,7 @@ from .utils import generate_excel_file_based_on_qs
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ["id", "name"]
+    form = CategoryAdminForm
 
 
 class ExpenseAdmin(admin.ModelAdmin):

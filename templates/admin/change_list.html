@@ -25,7 +25,7 @@
 			<div class="card-header">
 				<div class="card-title mb-0">
 					<h4>Default Datatable</h4>
-					<a href="#" class="btn btn-primary">Add more</a>
+					<a href="./add" class="btn btn-primary">Add more</a>
 				</div>
 			</div>
 			<div class="card-body">
@@ -35,6 +35,7 @@
 						<thead>
 							{% get_fields cl as all_fields %}
 							<tr>
+								<th>SL No</th>
 								{% for field in all_fields %}
 									<th>{{ field|beutify_field_name }}</th>
 								{% endfor %}
@@ -44,7 +45,9 @@
 						<tbody>
 						{% for obj in cl.result_list %}
 							<tr>
+								<td>{{ forloop.counter }}</td>
 								{% get_all_attributes_of_object obj all_fields as obj_values %}
+								
 								{% for value in obj_values %}
 									<td>{{ value }}</td>
 								{% endfor %}
