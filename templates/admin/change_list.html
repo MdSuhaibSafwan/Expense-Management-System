@@ -1,6 +1,7 @@
 {% extends "admin/base_site.html" %}
 {% load static %}
 {% load admin_extras %}
+{% load account_extras %}
 
 {% block wrapper %}
 	<!-- Header -->
@@ -9,7 +10,7 @@
 
 	<!-- Sidebar -->
 	{% include "admin/sidebar.html" with app_list=available_apps %}
-	<!-- /Sidebar -->
+	<!-- /Sidebar -->d,
 {% endblock wrapper %}
 
 {% block extra_style %}
@@ -18,6 +19,8 @@
 {% endblock extra_style %}
 
 {% block content %}
+
+{% check_user_perm_for_model user opts.app_label opts.model_name as has_permission %}
 
 <div class="row">
 	<div class="col-sm-12">
@@ -39,7 +42,7 @@
 								{% for field in all_fields %}
 									<th>{{ field|beutify_field_name }}</th>
 								{% endfor %}
-								<th></th>
+								
 							</tr>
 						</thead>
 						<tbody>
@@ -51,6 +54,8 @@
 								{% for value in obj_values %}
 									<td>{{ value }}</td>
 								{% endfor %}
+
+								{% if has_permission %}
 								<td class="text-end">
 									<div class="dropdown dropdown-action">
 										<a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
@@ -60,6 +65,8 @@
 										</div>
 									</div>
 								</td>
+								{% endif %}
+
 							</tr>
 						{% endfor %}
 						</tbody>
