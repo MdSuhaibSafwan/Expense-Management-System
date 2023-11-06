@@ -8,6 +8,10 @@ from django.http import HttpResponse
 from .utils import generate_excel_file_based_on_qs
 
 
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ["id", "name"]
+
+
 class ExpenseAdmin(admin.ModelAdmin):
     change_list_template = "admin/expense/expense_list.html"
     list_display = ["category", "user", "title", "cost", "date_created"]
@@ -56,5 +60,5 @@ class ExpenseAdmin(admin.ModelAdmin):
         pass
     
 
-admin.site.register(Category)
+admin.site.register(Category, CategoryAdmin)
 admin.site.register(Expense, ExpenseAdmin)

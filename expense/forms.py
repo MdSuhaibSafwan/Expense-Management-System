@@ -3,11 +3,16 @@ from django.forms import ModelForm
 from .models import Expense
 
 
+CLASS_NAME = "form-control"
+
 class ExpenseAdminForm(ModelForm):
 
     class Meta:
         model = Expense
         exclude = ["user", ]
+        widgets = {
+            'description': forms.Textarea(attrs={'class': CLASS_NAME})
+        }
 
     def clean(self):
         data = super().clean()

@@ -69,11 +69,11 @@ class FundTransferAdmin(BaseAdmin):
 			obj = self.object
 			return obj
 		except Exception as e:
-			print(e)
+			pass
 
 		try:
 			obj = FundTransfer.objects.get(id=object_id)
-		except ObjectDoesNotExist as e:
+		except ObjectDoesNotExist:
 			return None
 
 		return obj
