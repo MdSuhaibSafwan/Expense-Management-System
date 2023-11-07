@@ -1,6 +1,111 @@
 {% extends "admin/base_site.html" %}
 {% load static %}
+{% load admin_extras %}
 
 {% block content %}
-	<h1>Index Page</h1>
+<div class="row justify-content-center">
+	<div class="col-md-3 col-sm-6">
+		<div class="card">
+			<div class="card-body text-center">
+				<h3><b>2</b></h3>
+				<p>Total Employees</p>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-3 col-sm-6">
+		<div class="card">
+			<div class="card-body text-center">
+				<h3 class="text-success"><b>5</b></h3>
+				<p>Today Present</p>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-3 col-sm-6">
+		<div class="card">
+			<div class="card-body text-center">
+				<h3 class="text-danger"><b>12</b></h3>
+				<p>Today Absent</p>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-3 col-sm-6">
+		<div class="card">
+			<div class="card-body text-center">
+				<h3><b>5</b></h3>
+				<p>Today Left</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="row justify-content-center">
+	<div class="col">
+		<canvas id="myChart"></canvas>
+	</div>
+
+	<div class="col">
+	  <canvas id="myPieChart"></canvas>
+	</div>
+</div>
+
 {% endblock content %}
+
+{% block extra_scripts %}
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+	<script>
+	var pieLabelString = "{{ name_list|list_to_string }}";
+	var pieData = {{ expense_list }};
+	var pieLabel = pieLabel = pieLabelString.split(", ");
+	
+	var histogramX = {{ expense_months }};
+	var histogramY = {{ expense_costs }};
+
+	  const ctx = document.getElementById('myChart');
+
+	  new Chart(ctx, {
+	    type: 'bar',
+	    data: {
+	      labels: histogramX,
+	      datasets: [{
+	        label: 'Total Monthly Expenses',
+	        data: histogramY,
+	        borderWidth: 2
+	      }]
+	    },
+	    options: {
+	      scales: {
+	        y: {
+	          beginAtZero: true
+	        }
+	      }
+	    }
+	  });
+
+
+
+
+	const data = {
+	  labels: pieLabel,
+	  datasets: [{
+	    label: 'Category Expenses',
+	    data: pieData,
+
+	  }]
+	};
+
+
+	const config = {
+	  type: 'polarArea',
+	  data: data,
+	  options: {}
+	};
+
+	var pieCtx = document.getElementById("myPieChart");
+
+	new Chart(pieCtx, config);
+
+	</script>
+
+{% endblock extra_scripts %}

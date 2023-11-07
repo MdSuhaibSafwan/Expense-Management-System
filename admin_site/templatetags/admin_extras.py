@@ -35,4 +35,19 @@ def get_all_attributes_of_object(obj, fields=None, chl=None):
 
 	return lst
 
+def make_safe_label(label_tag):
+	return label_tag.split("<")[1].split(">")[1]
+
+def cs_list_to_string(lst):
+	string = ""
+	for i in range(len(lst)):
+		if len(lst)-1 == i:
+			string += str(lst[i])
+		else:
+			string += str(lst[i]) + ", "
+
+	return string
+
 register.filter("beutify_field_name", beutify_field_name)
+register.filter("make_safe_label", make_safe_label)
+register.filter("list_to_string", cs_list_to_string)

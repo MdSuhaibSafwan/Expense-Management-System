@@ -8,6 +8,7 @@ from django.urls.resolvers import URLPattern, URLResolver
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
+from expense.models import Category, Expense
 
 
 class AdminSiteConfig(admin.AdminSite):
@@ -66,5 +67,19 @@ class AdminSiteConfig(admin.AdminSite):
 			return redirect("/setup-2fa/")
 
 		return wrapper
+
+	def index(self, request, extra_content=None):
+		if extra_content == None:
+			extra_content = {}
+
+		name_list, expense_list = Category.objects.get_total_expense_set_by_queryset()
+		extra_content["name_list"] = list(name_list)
+		extra_content["expense_list"] = expense_list
+
+		extra_content["expense_months"], extra_content["expense_costs"] = Expense.objects.get_payments_for_a_year_monthly(2023)
+
+		print(extra_content)
+		
+		return super().index(request, extra_content)
 
 site = AdminSiteConfig(name="Expense Management")
