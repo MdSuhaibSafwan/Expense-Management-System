@@ -89,6 +89,7 @@ class FundTransferAdmin(BaseAdmin):
 	def add_readonly_fields_according_to_user(self, user):
 		if not user.is_author:
 			self.readonly_fields = ["from_account", "to_account", "amount", "description", "checker_assignee"]
+			print("Made read only fields")
 
 	def add_tabular_inline_according_to_user(self, user):
 		obj = self.get_object(self.request, self.object_id)

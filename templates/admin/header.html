@@ -41,10 +41,9 @@
             <div class="dropdown-menu">
                 <form method="POST" action="{% url 'admin:logout' %}">
                     {% csrf_token %}
-
                     <button type="submit" class="dropdown-item">Logout</button>
-                    
                 </form>
+                <a href="/setup-2fa/" class="dropdown-item">Setup 2FA</a>
             </div>
         </li>
     </ul>
