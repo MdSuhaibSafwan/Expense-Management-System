@@ -1,30 +1,100 @@
-{% extends "admin/change_list.html" %}
-{% load i18n admin_urls static admin_list %}
+{% extends "admin/base_site.html" %}
 {% load static %}
+{% load admin_extras %}
+{% load account_extras %}
 
-{% block object-tools-items %}
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+{% block wrapper %}
+    <!-- Header -->
+    {% include "admin/header.html" %}
+    <!-- /Header -->
 
+    <!-- Sidebar -->
+    {% include "admin/sidebar.html" with app_list=available_apps %}
+    <!-- /Sidebar -->
+{% endblock wrapper %}
 
-<!-- XDSoft DateTimePicker -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
+{% block extra_style %}
+    <!-- Datatable CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/dataTables.bootstrap4.min.css' %}">
+{% endblock extra_style %}
 
-<form action="{% url 'expense-report-xl' %}" method="POST">
-    {% csrf_token %}
-    <li>
-        <input type="date" name="date1"  style="background-color: #333333;color: #fff;border: none;padding: 4.5px 12px;border-radius: 14px;margin: 0;">
-    </li>
-    
-    <li>
-        <input type="date" name="date2" style="background-color: #333333;color: #fff;border: none;padding: 4.5px 12px;margin: 0;border-radius: 14px;">
-    </li>
-    
-    <li>
-        <input type="submit" value="Make-Report" style="background-color: #333333;color: #fff;border: none; padding: 6px 12px;margin: 0;border-radius: 14px;" class="add-link">
-    </li>
-    {{ block.super }}
-</form>
+{% block content %}
 
+{% check_user_perm_for_model_to_change user opts.app_label opts.model_name as has_permission_to_change %}
+{% check_user_perm_for_model_to_delete user opts.app_label opts.model_name as has_permission_to_delete %}
 
-{% endblock %}
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card mb-0">
+            <div class="card-header">
+                <div class="card-title mb-0">
+                    <h4>Default Datatable</h4>
+                    <a href="./add" class="btn btn-primary">Add more</a>
+                </div>
+            </div>
+            <div class="card-body">
+
+                <div class="table-responsive">
+                    <table class="datatable table table-stripped mb-0">
+                        <thead>
+                            {% get_fields cl as all_fields %}
+                            <tr>
+                                <th>SL No</th>
+                                {% for field in all_fields %}
+                                    <th>{{ field|beutify_field_name }}</th>
+                                {% endfor %}
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for obj in cl.result_list %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                {% get_all_attributes_of_object obj all_fields as obj_values %}
+                                
+                                {% for value in obj_values %}
+                                    <td>{{ value }}</td>
+                                {% endfor %}
+
+                                <td>
+                                    <ul class="list-inline m-0">
+
+                                        {% if has_permission_to_change %}
+
+                                            <li class="list-inline-item">
+                                                <a href="./{{ obj.id }}/change/" 
+                                                class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Edit">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+
+                                        {% if has_permission_to_delete %}
+                                            <li class="list-inline-item">
+                                                <a href="./{{ obj.id }}/delete/" 
+                                                class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Delete">
+                                                    <i class="fa fa-trash"></i>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block extra_scripts %}
+
+<script src="{% static 'assets/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'assets/js/dataTables.bootstrap4.min.js' %}"></script>
+
+{% endblock extra_scripts %}

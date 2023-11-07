@@ -62,7 +62,8 @@
 										{% if has_permission_to_change %}
 
 											<li class="list-inline-item">
-												<a href="./{{ obj.id }}" class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Edit">
+												<a href="./{{ obj.id }}/change/" 
+												class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Edit">
 													<i class="fa fa-edit"></i>
 												</a>
 											</li>
@@ -70,7 +71,8 @@
 
 										{% if has_permission_to_delete %}
 											<li class="list-inline-item">
-												<a href="./{{ obj.id }}" class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Delete">
+												<a href="./{{ obj.id }}/delete/" 
+												class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Delete">
 													<i class="fa fa-trash"></i>
 												</a>
 											</li>

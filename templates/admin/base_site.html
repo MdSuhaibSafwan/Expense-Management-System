@@ -36,7 +36,7 @@
     <body>
         <!-- Main Wrapper -->
         <div class="main-wrapper">
-        
+
             {% block wrapper %}
                 <!-- Header -->
                 {% include "admin/header.html" %}
@@ -48,7 +48,17 @@
             {% endblock wrapper %}
 
             <div class="page-wrapper">
-            
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags == "error" %}
+                            <div class="container-fluid alert alert-warning" role="alert">
+                        {% else %}
+                            <div class="container-fluid alert alert-{{ message.tags }}" role="alert">
+                        {% endif %}
+                            {{ message|safe }}
+                        </div>   
+                    {% endfor %}
+                {% endif %}         
                 <!-- Page Content -->
                 <div class="content container-fluid">
                 

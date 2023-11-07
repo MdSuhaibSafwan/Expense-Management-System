@@ -4,6 +4,7 @@ from lib.admin import BaseAdmin
 from .forms import FundTransferForm, FundApproveForm, FundCheckForm, FundCheckFormSet, FundApproveFormSet, \
 	AccountTypeForm, AccountForm
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class FundApproveInline(admin.TabularInline):
@@ -33,7 +34,7 @@ class FundCheckInline(admin.TabularInline):
 
 
 class FundTransferAdmin(BaseAdmin):
-	# change_form_template = "admin/account/change_fund_transfer.html"
+	change_form_template = "admin/account/fund_transfer_change.html"
 	form = FundTransferForm
 	list_display = ["id", "from_account", "to_account", "amount", "approved", "checked", "is_approved", "is_checked"]
 	fieldsets = (
@@ -57,13 +58,19 @@ class FundTransferAdmin(BaseAdmin):
 		self.add_readonly_fields_according_to_user(request.user)
 		return super().add_view(request, *args, **kwargs)
 
-	def change_view(self, request, object_id, *args, **kwargs):
+	def change_view(self, request, object_id, extra_content=None):
 		self.action_view = "change_view"
 		self.object_id = object_id
 		self.request = request
+		self.form_extras = {
+			"extra_form": None
+		}
 		self.add_readonly_fields_according_to_user(request.user)
 		self.add_tabular_inline_according_to_user(request.user)
-		return super().change_view(request, object_id, *args, **kwargs)
+		change_view =  super().change_view(request, object_id, extra_content)
+		change_view.context_data.update({"form_extras": self.form_extras})
+		context = change_view.context_data
+		return change_view
 
 	def get_object(self, request, object_id, from_field=None):
 		try:
@@ -95,13 +102,23 @@ class FundTransferAdmin(BaseAdmin):
 				messages.error(self.request, "sorry you are not obliged to check this transfer")
 				return None
 			self.inlines = [FundCheckInline, ]
+			try:
+				form = FundCheckForm(instance=obj.checked_response)
+			except ObjectDoesNotExist:
+				form = FundCheckForm()
+
+			self.form_extras.update({"extra_form": form, "form_name": "Checking Form", "form_action": "check"})
 
 		if user.is_approver:
 			fund_transfer_obj = self.get_object(self.request, self.object_id)
 			if fund_transfer_obj is None:
 				return None
+			try:
+				checked_obj = fund_transfer_obj.checked_response
+			except ObjectDoesNotExist:
+				messages.error(self.request, "Fund Transfer is not Checked")
+				return None
 
-			checked_obj = fund_transfer_obj.checked_response
 			if not checked_obj.is_checked:
 				messages.error(self.request, "Fund Transfer is not Checked")
 			else:
@@ -110,7 +127,13 @@ class FundTransferAdmin(BaseAdmin):
 					messages.error(self.request, "sorry you're not obliged to approve this transfer")
 					return None
 				self.inlines = [FundApproveInline, ]
-	
+				try:
+					form = FundApproveForm(instance=obj.approval_response)
+				except ObjectDoesNotExist:
+					form = FundApproveForm()
+				self.form_extras.update({"extra_form": form, "form_name": "Approval Form", "form_action": "approve"})
+		# self.extra_content.update({"extra_form": self.inlines})
+
 
 class AccountAdmin(BaseAdmin):
 	list_display = ["account_no", "routing_no", "name", "account_type", "opening_balance", "date_created"]

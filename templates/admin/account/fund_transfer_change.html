@@ -1,0 +1,90 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+{% load crispy_forms_tags %}
+
+{% block wrapper %}
+    {% include "admin/header.html" %}
+    
+{% endblock wrapper %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+{% block extra_style %}
+
+<style type="text/css">
+    .errorlist li {
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: .875em;
+        color: var(--bs-form-invalid-color);
+    }
+
+    .errornote {
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: .875em;
+        color: var(--bs-form-invalid-color);
+    }
+
+</style>
+
+{% endblock extra_style %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Fund Transfer</h4>
+            </div>
+            <div class="card-body">
+                {% for fieldset in adminform %}
+                  {% include "admin/includes/fieldset.html" %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% if form_extras.extra_form %}
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">{{ form_extras.form_name }}</h4>
+                </div>
+                <div class="card-body">
+                    <form action="/account/fundtransfer/{{ object_id }}/{{form_extras.form_action}}/", method="POST">
+                        {% csrf_token %}
+                        {{ form_extras.extra_form | crispy }}
+                        <div class="pt-2"> 
+                            <button class="btn btn-outline-success" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+
+        
+
+{% block after_related_objects %}{% endblock %}
+
+
+{% endblock content %}
+
+
+{% block admin_change_form_document_ready %}
+    <script id="django-admin-form-add-constants"
+            src="{% static 'admin/js/change_form.js' %}"
+            {% if adminform and add %}
+                data-model-name="{{ opts.model_name }}"
+            {% endif %}
+            async>
+    </script>
+{% endblock %}
+
+{# JavaScript for prepopulated fields #}
+{% prepopulated_fields_js %}
+
+</div>

@@ -65,6 +65,7 @@ def redirect_to_verification_if_fund_transfer_checked(function, to_url="/"):
 			obj = FundTransfer.objects.get(pk=kwargs.get("pk"))
 		except ObjectDoesNotExist as e:
 			messages.error(request, e)
+			print("Fund Transfer is checked")
 			return redirect("/")
 
 		ft_checked_obj = obj.get_checking_response()

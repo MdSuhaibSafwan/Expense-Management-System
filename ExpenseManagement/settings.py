@@ -23,6 +23,8 @@ INSTALLED_APPS = [
     'expense.apps.ExpenseConfig',
     'fund_history.apps.FundHistoryConfig',
 
+    'crispy_forms',
+
     # 'rest_framework',
     # 'rest_framework.authtoken',
 ]
@@ -80,6 +82,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTH_USER_MODEL = "user.User"
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 LANGUAGE_CODE = 'en-us'
 
