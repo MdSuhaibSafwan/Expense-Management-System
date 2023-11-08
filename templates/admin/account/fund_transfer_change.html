@@ -4,7 +4,7 @@
 
 {% block wrapper %}
     {% include "admin/header.html" %}
-    {% include "admin/sidebar.html" %}
+    {% include "admin/sidebar.html" with app_list=available_apps %}
     
 {% endblock wrapper %}
 

@@ -1,20 +1,8 @@
 from django.db.models.signals import post_save, pre_save
 from .models import Account, FundTransfer, FundCheck, FundApprove
 from django.dispatch import receiver
-from .dispatch import fund_transfer_approved, fund_transfer_is_checked
 from django.core.exceptions import ObjectDoesNotExist
-
-
-@receiver(signal=fund_transfer_approved)
-def add_and_reduce_account_balance(sender, instance: FundTransfer, **kwargs):
-	from_account = instance.from_account
-	to_account = instance.to_account
-	amount = instance.amount
-	to_account.opening_balance += amount
-	if from_account is not None:
-		from_account.opening_balance -= amount
-		from_account.save()
-	to_account.save()
+from .dispatch import fund_transfer_approved
 
 
 @receiver(signal=pre_save, sender=FundCheck)
@@ -44,6 +32,14 @@ def complete_fund_approve_if_2fa_verified(sender, instance, **kwargs):
 		return False
 
 	if instance.is_2fa_verified == True:
-		instance.is_completed = True		
+		instance.is_completed = True
+		fund_transfer_approved.send(sender=FundTransfer.__class__, instance=instance.fund_transfer)
+		return True
 
-	return True
+	return False
+
+
+@receiver(signal=fund_transfer_approved)
+def calculate_account_balance_between_accounts_if_related(sender, instance, **kwargs):
+	pass
+	""" REDUCE AND ADD ACCOUNT OPENING BALANCE """

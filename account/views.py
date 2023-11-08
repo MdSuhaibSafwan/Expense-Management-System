@@ -11,7 +11,6 @@ from user.models import User2FAAuth
 @user_checker_required
 @redirect_to_verification_if_fund_transfer_checked
 def fund_transfer_check_admin_view(request, pk, ft_checked_obj=None):
-	breakpoint()
 	ft_obj = get_object_or_404(FundTransfer, pk=pk)
 	if not ft_checked_obj:
 		ft_checked_obj = ft_obj.get_checking_response()
