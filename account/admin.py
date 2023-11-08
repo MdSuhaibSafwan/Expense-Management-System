@@ -147,12 +147,12 @@ class AccountTypeAdmin(BaseAdmin):
 
 
 class FundApproveAdmin(BaseAdmin):
-	list_display = ["id", "user", "fund_transfer", "is_approved", "is_2fa_verified"]
+	list_display = ["id", "user", "fund_transfer", "is_approved", "is_2fa_verified", "is_completed"]
 
 
 
 class FundCheckAdmin(BaseAdmin):
-	list_display = ["id", "user", "fund_transfer", "is_checked", "is_2fa_verified"]
+	list_display = ["id", "user", "fund_transfer", "is_checked", "is_2fa_verified", "is_completed"]
 
 
 

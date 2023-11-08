@@ -92,6 +92,10 @@ class FundTransfer(BaseModel):
 		obj = self.get_approval_response()
 		if obj is None:
 			return None
+
+		if not obj.is_completed:
+			return None
+
 		self.approved_obj = obj
 		return str(obj.user)
 
@@ -118,6 +122,9 @@ class FundTransfer(BaseModel):
 		obj = self.get_checking_response()
 		if obj is None:
 			return None	
+
+		if not obj.is_completed:
+			return None
 
 		self.checked_obj = obj
 		return str(obj.user)
