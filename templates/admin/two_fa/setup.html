@@ -14,10 +14,14 @@
       <label>Click the button generate a 2FA application code.</label>
     {% endif %}
 
-    <div class="submit-row">
-      <input type="submit" value="Submit">
-      <input placeholder="Type Your Code" name="otp">
-    </div>
+    <div class="row">
+        <div class="col">
+          <input type="text" class="form-control" placeholder="Type Your Code" name="otp" aria-label="Username" aria-describedby="basic-addon1">
+        </div>
+        <div class="col">
+          <input class="btn btn-primary" type="submit" value="Submit">      
+        </div>
+    </div>            
   </form>
 
 {% endblock %}
