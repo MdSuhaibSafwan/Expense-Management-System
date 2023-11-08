@@ -1,5 +1,5 @@
 from django.db.models.signals import post_save, pre_save
-from .models import Account, FundTransfer, FundCheck
+from .models import Account, FundTransfer, FundCheck, FundApprove
 from django.dispatch import receiver
 from .dispatch import fund_transfer_approved, fund_transfer_is_checked
 from django.core.exceptions import ObjectDoesNotExist
@@ -25,6 +25,22 @@ def complete_fund_check_if_2fa_verified(sender, instance, **kwargs):
 		return None
 
 	if fc_obj.is_2fa_verified == instance.is_2fa_verified:
+		return False
+
+	if instance.is_2fa_verified == True:
+		instance.is_completed = True		
+
+	return True
+
+
+@receiver(signal=pre_save, sender=FundApprove)
+def complete_fund_approve_if_2fa_verified(sender, instance, **kwargs):
+	try:
+		fa_obj = FundApprove.objects.get(id=instance.id)
+	except ObjectDoesNotExist:
+		return None
+
+	if fa_obj.is_2fa_verified == instance.is_2fa_verified:
 		return False
 
 	if instance.is_2fa_verified == True:
