@@ -134,6 +134,7 @@ class FundTransfer(BaseModel):
 class FundCheck(BaseModel):
 	user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 	description = models.TextField()
+	is_completed = models.BooleanField(default=False)
 	is_checked = models.BooleanField()
 	fund_transfer = models.OneToOneField(FundTransfer, on_delete=models.PROTECT, related_name="checked_response")
 	approver_assignee = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="fund_checked")
@@ -146,6 +147,7 @@ class FundCheck(BaseModel):
 class FundApprove(BaseModel):
 	user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 	description = models.TextField()
+	is_completed = models.BooleanField(default=False)
 	is_approved = models.BooleanField()
 	fund_transfer = models.OneToOneField(FundTransfer, on_delete=models.PROTECT, related_name="approval_response")
 	fund_check = models.OneToOneField(FundCheck, on_delete=models.PROTECT)

@@ -3,7 +3,7 @@
 
 {% block wrapper %}
     {% include "admin/header.html" %}
-    
+    {% include "admin/sidebar.html" %}
 {% endblock wrapper %}
 
 {% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
