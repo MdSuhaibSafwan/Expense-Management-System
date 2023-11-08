@@ -53,6 +53,15 @@ class ExpenseAdminForm(ModelForm):
 
     def clean(self):
         data = super().clean()
+
+        account = data.get("account", None)
+        cost = data.get("cost", None)
+        if not account:
+            return self.add_error("account", "Provide an Account")
+
+        if cost > account.opening_balance:
+            return self.add_error("cost", "Insufficient Balance")
+
         return data
 
     def validate_changed_data(self):
