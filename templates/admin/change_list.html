@@ -4,13 +4,8 @@
 {% load account_extras %}
 
 {% block wrapper %}
-	<!-- Header -->
 	{% include "admin/header.html" %}
-	<!-- /Header -->
-
-	<!-- Sidebar -->
 	{% include "admin/sidebar.html" with app_list=available_apps %}
-	<!-- /Sidebar -->d,
 {% endblock wrapper %}
 
 {% block extra_style %}
