@@ -9,6 +9,10 @@ from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from expense.models import Category, Expense
+from django.contrib.auth import get_user_model
+from django.utils import timezone
+
+User = get_user_model()
 
 
 class AdminSiteConfig(admin.AdminSite):
@@ -75,11 +79,12 @@ class AdminSiteConfig(admin.AdminSite):
 		name_list, expense_list = Category.objects.get_total_expense_set_by_queryset()
 		extra_content["name_list"] = list(name_list)
 		extra_content["expense_list"] = expense_list
-
 		extra_content["expense_months"], extra_content["expense_costs"] = Expense.objects.get_payments_for_a_year_monthly(2023)
-
-		print(extra_content)
-		
+		exp_qs = Expense.objects.all()
+		extra_content["total_expense"] = sum(list(exp_qs.values_list("cost", flat=True)))
+		extra_content["this_month_expense"] = sum(list(exp_qs.filter(date_created__month=timezone.now().month).values_list("cost", flat=True)))
+		extra_content["this_year_expense"] = sum(list(exp_qs.filter(date_created__year=timezone.now().year).values_list("cost", flat=True)))
+		extra_content["total_users"] = User.objects.all().count()		
 		return super().index(request, extra_content)
 
 site = AdminSiteConfig(name="Expense Management")

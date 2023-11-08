@@ -31,4 +31,3 @@ def complete_fund_check_if_2fa_verified(sender, instance, **kwargs):
 		instance.is_completed = True		
 
 	return True
-
