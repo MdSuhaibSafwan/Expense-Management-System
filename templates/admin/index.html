@@ -59,7 +59,8 @@
 	var pieData = {{ expense_list }};
 	var pieLabel = pieLabel = pieLabelString.split(", ");
 	
-	var histogramX = {{ expense_months }};
+
+	var histogramX = "{{ expense_months|make_month_num_to_string }}".split(", ");
 	var histogramY = {{ expense_costs }};
 
 	  const ctx = document.getElementById('myChart');

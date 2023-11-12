@@ -37,4 +37,3 @@ class User2FAAuthAdmin(admin.ModelAdmin):
 
 admin.site.register(User, UserAdmin)
 admin.site.register(User2FAAuth, User2FAAuthAdmin)
-admin.site.register(Group)

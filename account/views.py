@@ -134,3 +134,5 @@ def verify_otp_for_fund_approve(request, pk):
 
 	return render(request, "admin/two_fa/setup.html", context)
 
+
+
