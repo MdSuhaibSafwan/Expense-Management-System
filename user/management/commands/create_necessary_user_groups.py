@@ -10,7 +10,6 @@ class Command(BaseCommand):
 		self.stdout.write(
 			self.style.SUCCESS("Creating Groups of Author, Maker and Approver")
 		)
-		self.get_all_view_permissions()
 		self.create_author_group()
 		self.create_checker_group()
 		self.create_approver_group()
