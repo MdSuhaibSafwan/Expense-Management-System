@@ -1,4 +1,15 @@
-*/__pycache__/*
-venv
-*.sqlite3
-__pycache__
+#configuration file
+*/config.env
+!.gitignore
+
+#cache files
+*/__pycache__/
+*/*/__pycache__/
+*/*/*/__pycache__/
+
+#media/files
+/media
+/public/static
+.env
+env.example
+
