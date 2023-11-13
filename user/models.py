@@ -1,8 +1,12 @@
+import pyotp
+import qrcode
+import qrcode.image.svg
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.hashers import make_password
 from django.apps import apps
+from lib.models import create_hex_token, BaseModel
 
 
 class UserManager(UserManager):
@@ -91,3 +95,53 @@ class User(AbstractUser):
     @property
     def is_approver(self):
         return self.has_perm("account.add_fundapprove")
+
+    def has_2fa_token(self):
+        return self.auth_tokens_2fa.exists()
+
+    def has_valid_2fa(self):
+        two_fa = self.auth_tokens_2fa.all()
+        if not two_fa.exists():
+            return False
+            
+        for i in two_fa:
+            if not(i.is_verified):
+                return False
+        return True
+
+
+class User2FAAuthManager(models.Manager):
+
+    def get_latest_token_for_user(self, user):
+        token_obj = user.auth_tokens_2fa.first()
+        return token_obj
+
+
+class User2FAAuth(BaseModel):
+    id = models.UUIDField(primary_key=True, editable=False, default=create_hex_token)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="auth_tokens_2fa")
+    token = models.CharField(max_length=255, default=pyotp.random_base32)
+    is_verified = models.BooleanField(default=False)
+    objects = User2FAAuthManager()
+
+    class Meta:
+        ordering = ["-date_created", ]
+        unique_together = [["user", "token"], ]
+        verbose_name_plural = "User 2Factor Auth"
+
+    def is_token_valid(self, token):
+        totp = pyotp.TOTP(self.token)
+        return totp.verify(token)
+
+    def generate_provisioning_uri(self):
+        totp = pyotp.totp.TOTP(self.token)
+        uri = totp.provisioning_uri(name=self.user.email, issuer_name="Google Authenticator")
+        return uri
+
+    def generate_qr_code(self):
+        qr_uri = self.generate_provisioning_uri()
+        qr_code_image = qrcode.make(
+            qr_uri,
+            image_factory=qrcode.image.svg.SvgPathImage
+        )
+        return qr_code_image.to_string().decode("utf-8")

@@ -16,14 +16,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'admin_site.apps.AdminSiteConfig',
 
     'user.apps.UserConfig',
     'account.apps.AccountConfig',
-    # 'expense.apps.ExpenseConfig',
-    # 'bank.apps.BankConfig',
+    'expense.apps.ExpenseConfig',
+    'fund_history.apps.FundHistoryConfig',
 
-    'rest_framework',
-    'rest_framework.authtoken',
+    'crispy_forms',
+
+    # 'rest_framework',
+    # 'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -79,6 +82,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTH_USER_MODEL = "user.User"
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 LANGUAGE_CODE = 'en-us'
 

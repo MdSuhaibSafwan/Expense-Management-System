@@ -10,12 +10,15 @@ class UserAdminCreationForm(forms.ModelForm):
     A form for creating new users. Includes all the required
     fields, plus a repeated password.
     """
-    password = forms.CharField(widget=forms.PasswordInput)
-    password_2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    password_2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = User
         fields = ['email']
+        widgets = {
+            'email': forms.TextInput(attrs={'class': 'form-control'}),
+        }
 
     def clean(self):
         '''
@@ -42,11 +45,19 @@ class UserAdminChangeForm(forms.ModelForm):
     the user, but replaces the password field with admin's
     password hash display field.
     """
-    password = ReadOnlyPasswordHashField()
 
     class Meta:
         model = User
-        fields = ['email', 'password', 'is_active', 'is_superuser']
+        fields = ['email', 'is_active', 'is_superuser']
+        widgets = {
+            'email': forms.TextInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'is_superuser': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'is_staff': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'groups': forms.SelectMultiple(attrs={'class': 'form-control'})
+        }
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.

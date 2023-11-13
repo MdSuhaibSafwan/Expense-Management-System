@@ -1,34 +1,68 @@
-from typing import Any
 from django import forms
 from django.forms import ModelForm
-from .models import Expense
-from bank.models import BankAccount, BankCashout
+from .models import Expense, Category
+
+
+class CategoryAdminForm(ModelForm):
+
+    class Meta:
+        model = Category
+        fields = "__all__"
+
+        widgets = {
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+            }),
+
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+        }
 
 
 class ExpenseAdminForm(ModelForm):
 
     class Meta:
         model = Expense
-        exclude = ["user", "bank_cashout"]
+        exclude = ["user", ]
+        widgets = {
+            'category': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+
+            'account': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+            }),
+            
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            
+            'cost': forms.NumberInput(attrs={
+                'class': 'form-control',
+            }),
+            
+            'files': forms.FileInput(attrs={
+                'class': 'form-control',
+            })
+        }
 
     def clean(self):
         data = super().clean()
-        changed_data = self.changed_data
-        return data
-    
-    def clean_cost(self):
-        cost = self.cleaned_data.get("cost")
-        bank_cashout_obj = BankCashout.objects.get_latest_approved_object()
-        if not bank_cashout_obj:
-            raise forms.ValidationError("Not Sufficient Balance")
-        remaining_total = bank_cashout_obj.cash - sum(list(bank_cashout_obj.expenses.all().values_list("cost", flat=True)))
-        if self.should_add_cost:
-            remaining_total += self.added_cost
 
-        if cost > remaining_total:
-            raise forms.ValidationError("Not sufficient balance")
-        
-        return cost
+        account = data.get("account", None)
+        cost = data.get("cost", None)
+        if not account:
+            return self.add_error("account", "Provide an Account")
+
+        if cost > account.opening_balance:
+            return self.add_error("cost", "Insufficient Balance")
+
+        return data
 
     def validate_changed_data(self):
         data = {
@@ -40,12 +74,12 @@ class ExpenseAdminForm(ModelForm):
         }
         user_type = self.user.get_user_type()
 
-    def save(self, commit=False):
+    def save(self, commit=True):
         obj = super().save(commit=False)
         obj.user = self.user
-        obj.bank_cashout = self.bank_cashout
         obj.save()
         return obj
+
 
 class ExpenseAdminReportForm(forms.Form):
     error_text = "Please Provide date correctly"

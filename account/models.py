@@ -4,6 +4,7 @@ from lib.models import BaseModel
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
+from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
 
@@ -63,7 +64,8 @@ class Account(BaseModel):
 class FundTransfer(BaseModel):
 	amount = models.FloatField()
 	description = models.TextField()
-	from_account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="fund_transfer_from")
+	checker_assignee = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="fund_transfer_checked")
+	from_account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True, related_name="fund_transfer_from")
 	to_account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="fund_transfer_to")
 
 	def __str__(self):
@@ -76,11 +78,26 @@ class FundTransfer(BaseModel):
 		return super().save(*args, **kwargs)
 
 	def is_approved(self):
-		obj = self.get_approval_response()
+		try:
+			obj = self.approved_obj
+		except Exception:
+			obj = self.get_approval_response()
+
 		if obj is None:
 			return False
 
 		return obj.is_approved
+
+	def approved(self):
+		obj = self.get_approval_response()
+		if obj is None:
+			return None
+
+		if not obj.is_completed:
+			return None
+
+		self.approved_obj = obj
+		return str(obj.user)
 
 	def get_approval_response(self):
 		try:
@@ -91,11 +108,26 @@ class FundTransfer(BaseModel):
 		return obj
 
 	def is_checked(self):
-		obj = self.get_checking_response()
+		try:
+			obj = self.checked_obj
+		except Exception as e:
+			obj = self.get_checking_response()
+		
 		if obj is None:
-			return False
+			return False	
 
 		return obj.is_checked
+
+	def checked(self):
+		obj = self.get_checking_response()
+		if obj is None:
+			return None	
+
+		if not obj.is_completed:
+			return None
+
+		self.checked_obj = obj
+		return str(obj.user)
 
 	def get_checking_response(self):
 		try:
@@ -109,8 +141,11 @@ class FundTransfer(BaseModel):
 class FundCheck(BaseModel):
 	user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 	description = models.TextField()
+	is_completed = models.BooleanField(default=False)
 	is_checked = models.BooleanField()
 	fund_transfer = models.OneToOneField(FundTransfer, on_delete=models.PROTECT, related_name="checked_response")
+	approver_assignee = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="fund_checked")
+	is_2fa_verified = models.BooleanField(default=False)
 
 	def __str__(self):
 		return str(self.id)
@@ -119,9 +154,11 @@ class FundCheck(BaseModel):
 class FundApprove(BaseModel):
 	user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 	description = models.TextField()
+	is_completed = models.BooleanField(default=False)
 	is_approved = models.BooleanField()
 	fund_transfer = models.OneToOneField(FundTransfer, on_delete=models.PROTECT, related_name="approval_response")
-	fund_checking_response = models.OneToOneField(FundCheck, on_delete=models.PROTECT)
+	fund_check = models.OneToOneField(FundCheck, on_delete=models.PROTECT)
+	is_2fa_verified = models.BooleanField(default=False)
 
 	def __str__(self):
 		return str(self.id)
