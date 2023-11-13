@@ -1,0 +1,62 @@
+[tool.black]
+line-length = 100
+target-version = ['py39']
+quiet = true
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.venv
+  | _build
+  | build
+  | dist
+  | [a-z_]+/migrations
+)/
+'''
+
+[tool.flake8]
+max-line-length = 100
+exclude = [
+    '*/migrations/*', 
+    '*/views.py',
+    '*/apps.py',
+    'venv/*', 
+    'manage.py',
+]
+per-file-ignores = [
+    '*/tests/__init__.py: F401', 
+    '*/settings/*: F405',
+    '__init__.py: F401, F403',
+]
+
+[tool.poetry]
+name = "expense management system"
+version = "0.1.0"
+description = "Expense Management System"
+authors = ["aamarPay - P&E"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+django = "^4.2.7"
+django-admin = "^2.0.2"
+django-crispy-forms = "^2.1"
+pyotp = "^2.9.0"
+qrcode = "^7.4.2"
+openpyxl = "^3.1.2"
+django-environ = "^0.11.2"
+psycopg2 = "^2.9.9"
+hypercorn = "^0.15.0"
+
+
+[tool.poetry.group.dev.dependencies]
+django-stubs = "^4.2.6"
+flake8 = "^6.1.0"
+black = "^23.11.0"
+ipython = "^8.17.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
