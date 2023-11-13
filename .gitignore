@@ -9,7 +9,7 @@
 
 #media/files
 /media
-/public/static
+/static
 .env
 env.example
 
