@@ -1,0 +1,51 @@
+name: Expense Management System
+
+on:
+  push:
+    branches:
+      - development
+
+jobs:
+  clm_deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v3
+
+      - name: 🚚 Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: 'expense_management_deploy'
+
+      - name: 🚚 Adding Known Hosts
+        run: ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: 🚀 Deploy with rsync
+        run: rsync --update -arvz -e 'ssh -p ${{ secrets.SSH_PORT }}' . ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/www/docker_projects/aamarpay_expense_management_system
+
+      - name: 🚀 Update Docker
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          command_timeout: 30m
+          script: |
+            chmod +x /aamarpay/docker_projects/aamarpay_expense_management_system/*
+            docker system prune -a -f
+            sh /aamarpay/docker_projects/aamarpay_expense_management_system/deploy-dev.sh
+
+      - name: 🚀 Copy Media Files
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          command_timeout: 30m
+          script: |
+            docker cp /www/docker_persistent/expense_management/media/:/app/media
+            docker system prune -a -f
