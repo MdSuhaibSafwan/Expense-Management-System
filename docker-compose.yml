@@ -1,0 +1,54 @@
+version: "3"
+
+networks:
+    app-tier-expense:
+        driver: bridge
+
+services:
+    expense_management_db:
+        container_name: expense_management_db
+        image: 'postgres:14.5'
+        restart: unless-stopped
+        user: '0:0'
+        env_file:
+            - .env
+        volumes:
+            - /www/docker_persistent/expense_management/db:/var/lib/postgresql/data
+        networks:
+            - app-tier-expense
+        ports:
+            - '127.0.0.1:5440:5432'
+
+    expense_management_pgadmin:
+        image: dpage/pgadmin4
+        container_name: expense_management_pgadmin
+        depends_on:
+            - expense_management_db
+        user: '0:0'
+        restart: unless-stopped
+        networks:
+            - app-tier-expense
+        env_file:
+            - .env
+        ports:
+            - '127.0.0.1:5488:80'
+
+    expense_management_web:
+        container_name: expense_management_web
+        restart: always
+        user: "0:0"
+        build:
+            context: .
+            dockerfile: Dockerfile
+        command: ./deployment/start-app
+        networks:
+            - app-tier-expense
+        env_file:
+            - .env
+        ports:
+            - "127.0.0.1:8001:8000"
+        volumes:
+            - .:/app
+            - /www/docker_persistent/expense_management/public/static:/app/static
+            - /www/docker_persistent/expense_management/media:/app/media
+

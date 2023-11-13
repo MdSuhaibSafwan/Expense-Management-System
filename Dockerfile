@@ -1,13 +1,15 @@
-FROM python:3
+FROM python:3.9
+
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
 
 WORKDIR /app
 
-COPY requirements.txt .
-
+COPY requirements.txt /app/requirements.txt
 RUN pip3 install -r requirements.txt
 
-COPY . .
+COPY . /app/
+RUN sed -i 's/\r$//g' /app/deployment/*
+RUN chmod +x /app/deployment/*
 
-EXPOSE 8000
-
-CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+ENTRYPOINT ["/app/deployment/entrypoint"]
