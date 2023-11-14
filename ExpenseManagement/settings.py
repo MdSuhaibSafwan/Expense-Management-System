@@ -14,9 +14,13 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 SECRET_KEY = env("SECRET_KEY")
 
+
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['expense.aamarpay.dev', '127.0.0.1']
+
+# CSRF trusted origin
+CSRF_TRUSTED_ORIGINS = ['https://expense.aamarpay.dev', '127.0.0.1']
 
 INSTALLED_APPS = [
     "django.contrib.admin",
