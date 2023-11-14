@@ -9,7 +9,6 @@ services:
         container_name: expense_management_db
         image: 'postgres:14.5'
         restart: unless-stopped
-        user: '0:0'
         env_file:
             - .env
         volumes:
@@ -24,7 +23,6 @@ services:
         container_name: expense_management_pgadmin
         depends_on:
             - expense_management_db
-        user: '0:0'
         restart: unless-stopped
         networks:
             - app-tier-expense
@@ -36,7 +34,6 @@ services:
     expense_management_web:
         container_name: expense_management_web
         restart: always
-        user: "0:0"
         build:
             context: .
             dockerfile: Dockerfile
