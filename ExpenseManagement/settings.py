@@ -17,10 +17,10 @@ SECRET_KEY = env("SECRET_KEY")
 
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = ['expense.aamarpay.dev', '127.0.0.1']
+ALLOWED_HOSTS = ['expense.aamarpay.dev']
 
 # CSRF trusted origin
-CSRF_TRUSTED_ORIGINS = ['https://expense.aamarpay.dev', '127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://expense.aamarpay.dev']
 
 INSTALLED_APPS = [
     "django.contrib.admin",
