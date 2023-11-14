@@ -29,6 +29,7 @@ jobs:
           command_timeout: 30m
           script: |
             cd /www/docker_projects/aamarpay_expense_management_system
+            eval "$(ssh-agent -s)"
             ssh-add /root/.ssh/expense_management
             git stash
             git pull origin development
