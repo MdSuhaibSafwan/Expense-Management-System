@@ -51,7 +51,7 @@ def report_for_an_account(account):
 
 
 def create_worksheet_for_account_report(account, response):
-	sorted_ledger_list = report_for_an_account(account)
+	sorted_ledger_list = account_report(account)
 	headers = ["date", "content_obj_id", "amount", "debit", "credit"]
 	wb = Workbook()
 	ws = wb.active
@@ -80,5 +80,10 @@ def account_report(account):
 		temp_lst = [ft_obj.transaction_code, title, ft_obj.amount, dr_cr]
 		ledger_list.append(temp_lst)
 		
+	expense_qs = Expense.objects.filter(account=account)
+	for exp_obj in expense_qs:
+		temp_lst = [exp_obj.transaction_code, exp_obj.title, exp_obj.cost, "DR"]
+		ledger_list.append(temp_lst)
+
 	return ledger_list
 
