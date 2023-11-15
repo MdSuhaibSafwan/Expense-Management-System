@@ -1,0 +1,150 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+{% load admin_extras %}
+{% load account_extras %}
+
+
+
+{% block wrapper %}
+    <!-- Header -->
+    {% include "admin/header.html" %}
+    <!-- /Header -->
+
+    <!-- Sidebar -->
+    {% include "admin/sidebar.html" with app_list=available_apps %}
+    <!-- /Sidebar -->
+{% endblock wrapper %}
+
+{% block extra_style %}
+    <!-- Datatable CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/dataTables.bootstrap4.min.css' %}">
+    <!-- Select2 CSS -->
+    <link rel="stylesheet" href="assets/css/select2.min.css">
+
+    <!-- Datetimepicker CSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap-datetimepicker.min.css">
+
+
+{% endblock extra_style %}
+
+{% block content %}
+
+{% check_user_perm_for_model_to_change user opts.app_label opts.model_name as has_permission_to_change %}
+{% check_user_perm_for_model_to_delete user opts.app_label opts.model_name as has_permission_to_delete %}
+{% check_user_perm_for_model_to_add user opts.app_label opts.model_name as has_permission_to_add %}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card mb-0">
+            <div class="card-header">
+                <div class="card-title mb-0">
+                    <h4>Expenses</h4>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            {% if has_permission_to_add %}
+                        <a href="./add" class="btn btn-primary">Add more</a>
+                    {% endif %}
+                        </div>
+                        {% if account_qs.exists %}
+                            <form  method="POST" class="d-flex" action="/account/account/account-report/">
+                                {% csrf_token %}
+                                <div>
+                                    <select name="account-report">
+                                        {% for account in account_qs %}
+                                            <option>{{ account.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div>
+                                    <button class="btn btn-primary btn-sm">Generate Report</button>
+                                </div>
+                               
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+                    <table class="datatable table table-stripped mb-0">
+                        <thead>
+                            {% get_fields cl as all_fields %}
+                            <tr>
+                                <th>SL No</th>
+                                {% for field in all_fields %}
+                                    <th>{{ field|beutify_field_name }}</th>
+                                {% endfor %}
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for obj in cl.result_list %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                {% get_all_attributes_of_object obj all_fields as obj_values %}
+                                
+                                {% for value in obj_values %}
+                                    <td>{{ value }}</td>
+                                {% endfor %}
+
+                                <td>
+                                    <ul class="list-inline m-0">
+
+                                        {% if has_permission_to_change %}
+
+                                            <li class="list-inline-item">
+                                                <a href="./{{ obj.id }}/change/" 
+                                                class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Edit">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+
+                                        {% if has_permission_to_delete %}
+                                            <li class="list-inline-item">
+                                                <a href="./{{ obj.id }}/delete/" 
+                                                class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Delete">
+                                                    <i class="fa fa-trash"></i>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block extra_scripts %}
+
+<script src="{% static 'assets/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'assets/js/dataTables.bootstrap4.min.js' %}"></script>
+
+<script type="text/javascript">
+
+    function hitGenerateAccountReport(){
+        var select = document.getElementById('select-account-report');
+        var value = select.value;
+        console.log("Will be hitting the url");
+    };
+
+    function changeOptionName(self){
+        var select = document.getElementById('select-account-report');
+        var value = select.value;
+        select.setAttribute("value", value);
+    };
+
+</script>
+
+{% endblock extra_scripts %}

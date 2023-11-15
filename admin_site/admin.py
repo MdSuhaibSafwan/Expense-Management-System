@@ -56,13 +56,13 @@ class AdminSiteConfig(admin.AdminSite):
 
 		urls_list = [
 			path("setup-2fa/", self.admin_view(TwoFactorAuthSetupView.as_view()), name="setup_2fa"),
-			path("account/account/<pk>/account-report/", self.report_for_account_view, ),
+			path("account/account/account-report/", self.report_for_account_view, ),
 		] + urls_list
 
 		return urls_list
 
-	def report_for_account_view(self, request, pk):
-		return account_report_view(request, pk)
+	def report_for_account_view(self, request):
+		return account_report_view(request)
 
 	def two_fa_decorator(self, view):
 		def wrapper(request, *args, **kwargs):
