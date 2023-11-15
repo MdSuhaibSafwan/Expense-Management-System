@@ -12,11 +12,11 @@ def generate_excel_file_based_on_qs(queryset, response):
     wb = Workbook()
     ws = wb.active
     ws.title = "Expenses"
-    headers = ["Date", "User", "Title", "Category Name", "cost"]
+    headers = ["Date", "Account", "User", "Title", "Category Name", "cost"]
     ws.append(headers)
     
     for expense in queryset:
-        lst = [str(expense.date_created.date()), expense.user.email, expense.title, expense.category.name,
+        lst = [str(expense.date_created.date()), expense.account.name, expense.user.email, expense.title, expense.category.name,
         str(expense.cost), ]
         ws.append(lst)
 
