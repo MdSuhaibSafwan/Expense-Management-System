@@ -50,8 +50,35 @@ def report_for_an_account(account):
 	return sorted_ledger_list
 
 
-def create_worksheet_for_account_report(account):
+def create_worksheet_for_account_report(account, response):
 	sorted_ledger_list = report_for_an_account(account)
 	headers = ["date", "content_obj_id", "amount", "debit", "credit"]
+	wb = Workbook()
+	ws = wb.active
+	ws.title = "Account Worksheet"
+	ws.append(headers)
 
+	for account in sorted_ledger_list:
+		print(account)
+
+	# wb.save(response)
+	return wb, response
+
+
+
+def account_report(account):
+	ft_qs = FundTransfer.objects.filter(Q(from_account=account) | Q(to_account=account))
+	ledger_list = []
+	for ft_obj in ft_qs:
+		if ft_obj.from_account == account:
+			title = f"Outgoing Fund transfer from {account} to {ft_obj.to_account}"
+			dr_cr = "DR"
+		else:
+			title = f"Fund Inserted for a transfer from {ft_obj.from_account} to {account}"
+			dr_cr = "CR"
+
+		temp_lst = [ft_obj.transaction_code, title, ft_obj.amount, dr_cr]
+		ledger_list.append(temp_lst)
+		
+	return ledger_list
 
