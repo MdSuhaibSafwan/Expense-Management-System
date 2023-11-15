@@ -36,7 +36,7 @@
                                 <a href="./add" class="btn btn-primary">Add more</a>
                             {% endif %}
                         </div>
-                        <form  method="POST" class="d-flex" action=".">
+                        <form  method="POST" class="d-flex" action="/expense/create-report/">
                             {% csrf_token %}
                             <div>
                                 <input class="form-control" type="date" name="date1">
