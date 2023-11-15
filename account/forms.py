@@ -4,10 +4,21 @@ from django.forms.models import BaseInlineFormSet
 
 
 class FundApproveForm(forms.ModelForm):
+	is_changable = True
 
 	class Meta:
 		model = FundApprove
 		exclude = ["fund_transfer", "user", "fund_check", "is_completed", "is_2fa_verified"]
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		instance = getattr(self, "instance", None)
+		if instance:
+			if (instance.is_2fa_verified) and (instance.is_completed):
+				self.fields["description"].widget.attrs["disabled"] = "disabled"
+				self.fields["is_approved"].widget.attrs["disabled"] = "disabled"
+				setattr(self, "is_changable", False)
+
 
 	def clean(self):
 		data = super().clean()
@@ -22,11 +33,22 @@ class FundApproveForm(forms.ModelForm):
 
 
 class FundCheckForm(forms.ModelForm):
-
+	is_changable = True
+	
 	class Meta:
 		model = FundCheck
 		# fields = "__all__"
 		exclude = ["fund_transfer", "user", "is_completed", "is_2fa_verified"]
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		instance = getattr(self, "instance", None)
+		if instance:
+			if (instance.is_2fa_verified) and (instance.is_completed):
+				self.fields["description"].widget.attrs["disabled"] = "disabled"
+				self.fields["is_checked"].widget.attrs["disabled"] = "disabled"
+				self.fields["approver_assignee"].widget.attrs["disabled"] = "disabled"
+				setattr(self, "is_changable", False)
 
 	def clean(self):
 		data = super().clean()
