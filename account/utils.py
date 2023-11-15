@@ -77,7 +77,8 @@ def account_report(account):
 		
 	expense_qs = Expense.objects.filter(account=account)
 	for exp_obj in expense_qs:
-		temp_lst = [exp_obj.date_created, exp_obj.transaction_code, exp_obj.title, exp_obj.cost, "DR"]
+		title = f"Expense for '{exp_obj.title}'"
+		temp_lst = [exp_obj.date_created, exp_obj.transaction_code, title, exp_obj.cost, "DR"]
 		ledger_list.append(temp_lst)
 
 	sorted_ledger_list = sorted(ledger_list, key=lambda x: x[0])
