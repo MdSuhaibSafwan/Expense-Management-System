@@ -49,9 +49,9 @@
                             <form  method="POST" class="d-flex" action="/account/account/account-report/">
                                 {% csrf_token %}
                                 <div>
-                                    <select class="form-select form-select-sm" aria-label=".form-select-lg example" name="account-report">
+                                    <select class="form-select form-select-sm" aria-label=".form-select-lg example" name="account-select">
                                         {% for account in account_qs %}
-                                            <option>{{ account }}</option>
+                                            <option value="{{ account.id }}">{{ account.name }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>

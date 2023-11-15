@@ -139,8 +139,8 @@ def verify_otp_for_fund_approve(request, pk):
 
 
 def account_report_view(request):
-	breakpoint()
-	
+	account_id = request.POST.get("account-select")
+	account = get_object_or_404(Account, id=account_id)
 	response = HttpResponse(content_type='application/ms-excel')
 	response['Content-Disposition'] = 'attachment;filename="report.xlsx"'
 	wb, response = create_worksheet_for_account_report(account, response)
