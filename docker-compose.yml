@@ -3,7 +3,7 @@ version: "3"
 networks:
     app-tier-expense:
         driver: bridge
-    app-tier-pgadmin:
+    default_pgadmin_app-tier-pgadmin:
         external: true
 
 services:
@@ -17,7 +17,7 @@ services:
             - /www/docker_persistent/expense_management/db:/var/lib/postgresql/data
         networks:
             - app-tier-expense
-            - app-tier-pgadmin
+            - default_pgadmin_app-tier-pgadmin
         ports:
             - '127.0.0.1:5440:5432'
 
