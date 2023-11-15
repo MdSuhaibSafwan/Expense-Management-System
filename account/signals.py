@@ -41,5 +41,13 @@ def complete_fund_approve_if_2fa_verified(sender, instance, **kwargs):
 
 @receiver(signal=fund_transfer_approved)
 def calculate_account_balance_between_accounts_if_related(sender, instance, **kwargs):
-	pass
 	""" REDUCE AND ADD ACCOUNT OPENING BALANCE """
+	
+	from_account = instance.from_account
+	to_account = instance.to_account
+	if from_account:
+		from_account.opening_balance -= instance.amount
+		from_account.save()
+
+	to_account.opening_balance += instance.amount
+	to_account.save()
