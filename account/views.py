@@ -36,7 +36,7 @@ def fund_transfer_check_admin_view(request, pk, ft_checked_obj=None):
 
 	context["form"] = form
 
-	return render(request, "admin/account/fund_check_approve.html", context)
+	return redirect(f"/account/fundtransfer/{ft_obj.pk}/")
 
 
 @user_approver_required
@@ -80,7 +80,7 @@ def fund_transfer_approve_admin_view(request, pk, ft_obj=None, fc_obj=None, ft_a
 
 	context["form"] = form
 
-	return render(request, "admin/account/fund_check_approve.html", context)
+	return redirect(f"/account/fundtransfer/{ft_obj.pk}/")
 
 
 @user_checker_required
