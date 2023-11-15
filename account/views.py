@@ -6,6 +6,9 @@ from django.contrib import messages
 from .decorators import (user_checker_required, user_approver_required, redirect_to_home_if_already_verified,
 		fund_transfer_checked_required, redirect_to_verification_if_fund_transfer_checked)
 from user.models import User2FAAuth
+from account.models import Account
+from django.http import HttpResponse
+from .utils import create_worksheet_for_account_report
 
 
 @user_checker_required
@@ -135,4 +138,9 @@ def verify_otp_for_fund_approve(request, pk):
 	return render(request, "admin/two_fa/setup.html", context)
 
 
-
+def account_report_view(request, pk):
+	account = get_object_or_404(Account, pk=pk)
+	response = HttpResponse(content_type='application/ms-excel')
+	response['Content-Disposition'] = 'attachment;filename="report.xlsx"'
+	wb, response = create_worksheet_for_account_report(account, response)
+	return response

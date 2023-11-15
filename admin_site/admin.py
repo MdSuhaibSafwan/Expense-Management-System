@@ -11,6 +11,7 @@ from django.shortcuts import redirect
 from expense.models import Category, Expense
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from account.views import account_report_view
 
 User = get_user_model()
 
@@ -54,10 +55,14 @@ class AdminSiteConfig(admin.AdminSite):
 				)
 
 		urls_list = [
-			path("setup-2fa/", self.admin_view(TwoFactorAuthSetupView.as_view()), name="setup_2fa")
+			path("setup-2fa/", self.admin_view(TwoFactorAuthSetupView.as_view()), name="setup_2fa"),
+			path("account/account/<pk>/account-report/", self.report_for_account_view, ),
 		] + urls_list
 
 		return urls_list
+
+	def report_for_account_view(self, request, pk):
+		return account_report_view(request, pk)
 
 	def two_fa_decorator(self, view):
 		def wrapper(request, *args, **kwargs):
