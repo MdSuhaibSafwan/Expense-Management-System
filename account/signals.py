@@ -33,7 +33,9 @@ def complete_fund_approve_if_2fa_verified(sender, instance, **kwargs):
 
 	if instance.is_2fa_verified == True:
 		instance.is_completed = True
-		fund_transfer_approved.send(sender=FundTransfer.__class__, instance=instance.fund_transfer)
+		if instance.is_approved:
+			fund_transfer_approved.send(sender=FundTransfer.__class__, instance=instance.fund_transfer)
+	
 		return True
 
 	return False
@@ -41,5 +43,13 @@ def complete_fund_approve_if_2fa_verified(sender, instance, **kwargs):
 
 @receiver(signal=fund_transfer_approved)
 def calculate_account_balance_between_accounts_if_related(sender, instance, **kwargs):
-	pass
 	""" REDUCE AND ADD ACCOUNT OPENING BALANCE """
+	
+	from_account = instance.from_account
+	to_account = instance.to_account
+	if from_account:
+		from_account.opening_balance -= instance.amount
+		from_account.save()
+
+	to_account.opening_balance += instance.amount
+	to_account.save()

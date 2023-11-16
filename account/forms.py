@@ -4,10 +4,21 @@ from django.forms.models import BaseInlineFormSet
 
 
 class FundApproveForm(forms.ModelForm):
+	is_changable = True
 
 	class Meta:
 		model = FundApprove
 		exclude = ["fund_transfer", "user", "fund_check", "is_completed", "is_2fa_verified"]
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		instance = getattr(self, "instance", None)
+		if instance:
+			if (instance.is_2fa_verified) and (instance.is_completed):
+				self.fields["description"].widget.attrs["disabled"] = "disabled"
+				self.fields["is_approved"].widget.attrs["disabled"] = "disabled"
+				setattr(self, "is_changable", False)
+
 
 	def clean(self):
 		data = super().clean()
@@ -22,11 +33,22 @@ class FundApproveForm(forms.ModelForm):
 
 
 class FundCheckForm(forms.ModelForm):
-
+	is_changable = True
+	
 	class Meta:
 		model = FundCheck
 		# fields = "__all__"
 		exclude = ["fund_transfer", "user", "is_completed", "is_2fa_verified"]
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		instance = getattr(self, "instance", None)
+		if instance:
+			if (instance.is_2fa_verified) and (instance.is_completed):
+				self.fields["description"].widget.attrs["disabled"] = "disabled"
+				self.fields["is_checked"].widget.attrs["disabled"] = "disabled"
+				self.fields["approver_assignee"].widget.attrs["disabled"] = "disabled"
+				setattr(self, "is_changable", False)
 
 	def clean(self):
 		data = super().clean()
@@ -91,6 +113,7 @@ class FundTransferForm(forms.ModelForm):
 
 	def validate_checking_response(self, fund_transfer_obj):
 		checker_resp_obj = fund_transfer_obj.get_checking_response()
+		self.ft_checked_obj = checker_resp_obj
 		if checker_resp_obj is None:
 			self.add_error("from_account", "Please provide a check to fund transaction to apply again from this account")
 
@@ -99,7 +122,9 @@ class FundTransferForm(forms.ModelForm):
 	def validate_approval_response(self, fund_transfer_obj):
 		approval_response_obj = fund_transfer_obj.get_approval_response()
 		if approval_response_obj is None:
-			self.add_error("from_account", "Please approve previous fund transaction to apply again from this account")
+			checker_resp_obj = ft_checked_obj
+			if checker_resp_obj.is_checked:
+				self.add_error("from_account", "Please approve previous fund transaction to apply again from this account")
 
 		return True
 

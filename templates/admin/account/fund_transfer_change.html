@@ -57,9 +57,13 @@
                     <form action="/account/fundtransfer/{{ object_id }}/{{form_extras.form_action}}/", method="POST">
                         {% csrf_token %}
                         {{ form_extras.extra_form | crispy }}
-                        <div class="pt-2"> 
-                            <button class="btn btn-outline-success" type="submit">Submit</button>
-                        </div>
+                        {% if form_extras.extra_form.is_changable %}
+                            <div class="pt-2"> 
+                                <button class="btn btn-outline-success" type="submit">Submit</button>
+                            </div>
+                        {% else %}
+
+                        {% endif %}
                     </form>
                 </div>
             </div>
