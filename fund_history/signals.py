@@ -26,7 +26,7 @@ def add_an_instruction_to_journal_for_account_fund_transfer(sender, instance, **
 	content_type = ContentType.objects.get_for_model(instance.__class__)
 	title = f"Fund Transfer between accounts from {instance.from_account} to {instance.to_account}"
 	if not instance.from_account:
-		title = "Balance add on account"
+		title = f"Balance add to account {instance.to_account.name}"
 	description = title
 	fh_obj = FundHistory(object_id=instance.id, content_type=content_type, amount=instance.amount,
 			title=title, description=description)
