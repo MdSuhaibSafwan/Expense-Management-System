@@ -70,6 +70,8 @@ def account_report(account):
 			dr_cr = "DR"
 		else:
 			title = f"Fund Inserted for a transfer from {ft_obj.from_account} to {account}"
+			if not ft_obj.from_account:
+				title = f"Fund Inserted to {account}"
 			dr_cr = "CR"
 
 		temp_lst = [ft_obj.date_created, ft_obj.transaction_code, title, ft_obj.amount, dr_cr]
