@@ -89,7 +89,13 @@ def make_month_num_to_string(month_list):
 	return new_month_string
 
 
+def safe_model_name(model_name):
+	breakpoint()
+	return model_name
+
+
 register.filter("beutify_field_name", beutify_field_name)
 register.filter("make_safe_label", make_safe_label)
 register.filter("list_to_string", cs_list_to_string)
 register.filter("make_month_num_to_string", make_month_num_to_string)
+register.filter("safe_model_name", safe_model_name)
