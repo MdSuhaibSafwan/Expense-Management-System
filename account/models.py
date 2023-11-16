@@ -1,4 +1,3 @@
-import secrets
 from django.db import models
 from django.contrib.auth import get_user_model
 from lib.models import BaseModel
@@ -68,7 +67,6 @@ class FundTransfer(BaseModel):
 	checker_assignee = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="fund_transfer_checked")
 	from_account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True, related_name="fund_transfer_from")
 	to_account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="fund_transfer_to")
-	transaction_code = models.CharField(max_length=64, unique=True, default=secrets.token_hex)
 
 	def __str__(self):
 		return str(self.id)
@@ -140,12 +138,6 @@ class FundTransfer(BaseModel):
 		return obj
 
 
-class FundCheckManager(models.Manager):
-
-	def delete(self, *args, **kwargs):
-		return super().delete(*args, **kwargs)
-
-
 class FundCheck(BaseModel):
 	user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 	description = models.TextField()
@@ -155,16 +147,8 @@ class FundCheck(BaseModel):
 	approver_assignee = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="fund_checked")
 	is_2fa_verified = models.BooleanField(default=False)
 
-	objects = FundCheckManager()
-
 	def __str__(self):
 		return str(self.id)
-
-	def delete(self):
-		if (self.is_2fa_verified) or (self.is_completed):
-			raise ValueError("Fund Check after being verified cannot be deleted")
-
-		return super().delete()
 
 
 class FundApprove(BaseModel):
@@ -178,9 +162,3 @@ class FundApprove(BaseModel):
 
 	def __str__(self):
 		return str(self.id)
-
-	def delete(self):
-		if (self.is_2fa_verified) or (self.is_completed):
-			raise ValueError("Fund Approval after being verified cannot be deleted")
-
-		return super().delete()

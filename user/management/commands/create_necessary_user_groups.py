@@ -52,7 +52,7 @@ class Command(BaseCommand):
 	def create_checker_group(self):
 		group, created = Group.objects.get_or_create(name="Checker Permission")
 		self.stdout.write(
-			self.style.SUCCESS("Checker Group Created")
+			self.style.SUCCESS("Author Group Created")
 		)
 		if created:
 			perms = self.get_checker_permissions()
@@ -63,7 +63,7 @@ class Command(BaseCommand):
 	def create_approver_group(self):
 		group, created = Group.objects.get_or_create(name="Approver Permission")
 		self.stdout.write(
-			self.style.SUCCESS("Approver Group Created")
+			self.style.SUCCESS("Author Group Created")
 		)
 		if created:
 			perms = self.get_approver_permissions()

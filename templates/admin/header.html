@@ -39,15 +39,11 @@
                 <span>{{ user.email }}</span>
             </a>
             <div class="dropdown-menu">
-                {% if user.is_authenticated %}
-                    <form method="POST" action="{% url 'admin:logout' %}">
-                        {% csrf_token %}
-                        <button type="submit" class="dropdown-item">Logout</button>
-                    </form>
-                    <a href="/setup-2fa/" class="dropdown-item">Setup 2FA</a>
-                {% else %}
-                    <a href="{% url 'admin:login' %}" class="dropdown-item">Login</a>
-                {% endif %}
+                <form method="POST" action="{% url 'admin:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="dropdown-item">Logout</button>
+                </form>
+                <a href="/setup-2fa/" class="dropdown-item">Setup 2FA</a>
             </div>
         </li>
     </ul>
@@ -57,11 +53,7 @@
     <div class="dropdown mobile-user-menu">
         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></a>
         <div class="dropdown-menu dropdown-menu-right">
-            {% if user.is_authenticated %}
-                <a class="dropdown-item" href="{% url 'admin:logout' %}">Logout</a>
-            {% else %}
-                <a class="dropdown-item" href="{% url 'admin:login' %}">Login</a>
-            {% endif %}
+            <a class="dropdown-item" href="{% url 'admin:logout' %}">Logout</a>
         </div>
     </div>
     <!-- /Mobile Menu -->
