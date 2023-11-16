@@ -53,9 +53,9 @@ class UserAdminChangeForm(forms.ModelForm):
             'email': forms.TextInput(attrs={'class': 'form-control'}),
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'is_superuser': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'is_active': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'is_staff': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'is_superuser': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'is_staff': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'groups': forms.SelectMultiple(attrs={'class': 'form-control'})
         }
 
