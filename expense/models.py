@@ -1,4 +1,3 @@
-import secrets
 from django.db import models
 from django.contrib.auth import get_user_model
 from account.models import Account
@@ -56,7 +55,6 @@ class Expense(BaseModel):
     description = models.TextField(null=True, blank=True)
     cost = models.FloatField()
     files = models.FileField(upload_to="expense/", null=True, blank=True)
-    transaction_code = models.CharField(max_length=64, unique=True, default=secrets.token_hex)
 
     objects = ExpenseManager()
 

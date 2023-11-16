@@ -30,25 +30,9 @@
             <div class="card-header">
                 <div class="card-title mb-0">
                     <h4>Expenses</h4>
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            {% if has_permission_to_add %}
-                                <a href="./add" class="btn btn-primary">Add more</a>
-                            {% endif %}
-                        </div>
-                        <form  method="POST" class="d-flex" action="/expense/create-report/">
-                            {% csrf_token %}
-                            <div>
-                                <input class="form-control" type="date" name="date1">
-                            </div>
-                            <div>
-                                <input class="form-control" type="date" name="date2">
-                            </div>
-                            <div>
-                                <button class="btn btn-primary">Generate Report</button>
-                            </div>
-                        </form>
-                    </div>   
+                    {% if has_permission_to_add %}
+                        <a href="./add" class="btn btn-primary">Add more</a>
+                    {% endif %}
                 </div>
             </div>
             <div class="card-body">

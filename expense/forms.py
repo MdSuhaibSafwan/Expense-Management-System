@@ -24,7 +24,7 @@ class ExpenseAdminForm(ModelForm):
 
     class Meta:
         model = Expense
-        exclude = ["user", "transaction_code"]
+        exclude = ["user", ]
         widgets = {
             'category': forms.Select(attrs={
                 'class': 'form-control',
