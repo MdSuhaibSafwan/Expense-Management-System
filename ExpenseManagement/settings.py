@@ -14,13 +14,15 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 SECRET_KEY = env("SECRET_KEY")
 
+# SHOULD BE TRUE IF WE WORK WITH THEM IN LOCAL SERVER
+DEVELOPMENT_MODE = os.environ.get("DEVELOPMENT_MODE", False) == "True"
 
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = ['expense.aamarpay.dev']
+ALLOWED_HOSTS = ['expense.aamarpay.dev', "127.0.0.1", ]
 
 # CSRF trusted origin
-CSRF_TRUSTED_ORIGINS = ['https://expense.aamarpay.dev']
+CSRF_TRUSTED_ORIGINS = ['https://expense.aamarpay.dev', "http://127.0.0.1:8000"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -71,16 +73,23 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "ExpenseManagement.wsgi.application"
 
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("DB_NAME"),
-        "USER": env("DB_USER"),
-        "PASSWORD": env("DB_PASS"),
-        "HOST": env("DB_HOST"),
-        "PORT": env("DB_PORT"),
+if DEVELOPMENT_MODE:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / 'db.sqlite3',
+        }
     }
+else:    
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": env("DB_NAME"),
+            "USER": env("DB_USER"),
+            "PASSWORD": env("DB_PASS"),
+            "HOST": env("DB_HOST"),
+            "PORT": env("DB_PORT"),
+        }
 }
 
 
