@@ -42,7 +42,7 @@
     {% if is_popup %}<input type="hidden" name="{{ is_popup_var }}" value="1">{% endif %}
     {% if to_field %}<input type="hidden" name="{{ to_field_var }}" value="{{ to_field }}">{% endif %}
     <input class="btn btn-outline-danger" type="submit" value="{% translate 'Yes, I’m sure' %}">
-    <a class="btn btn-outline-success" href="#" class="button cancel-link">{% translate "No, take me back" %}</a>
+    <a class="btn btn-outline-success" href="/{{ opts.app_label }}/{{ opts.model_name }}" class="button cancel-link">{% translate "No, take me back" %}</a>
     </div>
     </form>
   {% endblock %}

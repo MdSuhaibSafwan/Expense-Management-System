@@ -20,6 +20,10 @@
 
 {% block content %}
 
+{% block page_header %}
+
+{% endblock page_header %}
+
 {% if form.non_field_errors %}
 {% for error in form.non_field_errors %}
 <p class="errornote">
@@ -28,8 +32,10 @@
 {% endfor %}
 {% endif %}
 
-<div id="content-main" class="card shadow border" style="width: 850px;">
-
+<div id="content-main" class="card shadow border" style="width: 850px; align-items: center;">
+  <img style="height: auto; max-width: 50%; padding-top: 20px;" 
+  src="{% static 'assets/img/aamarpay_logo.png' %}">
+  <h4 style="color: #898989;">Welcome to aamarpay</h4>
   {% if user.is_authenticated %}
   <p class="errornote">
       You are authenticated as {{ username }}, but are not authorized to
@@ -37,7 +43,7 @@
   </p>
   {% endif %}
 
-  <form action="{{ app_path }}" class="p-5" method="post" id="login-form">{% csrf_token %}
+  <form action="{{ app_path }}" style="width: 700px;" class="p-5 pt-1" method="post" id="login-form">{% csrf_token %}
     <div class="form-row">
       
       <label for="id_username" class="required">Email address:</label> 
