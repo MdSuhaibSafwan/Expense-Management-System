@@ -61,18 +61,20 @@
                 {% endif %}         
                 <!-- Page Content -->
                 <div class="content container-fluid">
-                
-                    <!-- Page Header -->
-                    <div class="page-header">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <h3 class="page-title">Welcome {{ user.email }}!</h3>
-                                <ul class="breadcrumb">
-                                    <li class="breadcrumb-item active">Welcome to Dashboard</li>
-                                </ul>
+                    
+                    {% block page_header %}
+                        <!-- Page Header -->
+                        <div class="page-header">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h3 class="page-title">Welcome {{ user.email }}!</h3>
+                                    <ul class="breadcrumb">
+                                        <li class="breadcrumb-item active">Welcome to Dashboard</li>
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                    </div>  
+                        </div>  
+                    {% endblock page_header %}
 
                     {% block content %}
                     {% endblock content %}
