@@ -125,6 +125,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Custom Settings
 AUTH_USER_MODEL = "user.User"
 
+EMAIL_HOST = "smtp.mailgun.org"
+EMAIL_HOST_USER = "dev@aamarpay.xyz"
+EMAIL_HOST_PASSWORD = "0268b88d2e11c6cc2e95976373892ec7-f7d687c0-9ce51378"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
 STATIC_URL = "static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
