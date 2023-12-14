@@ -38,4 +38,3 @@ services:
             - .:/app
             - /www/docker_persistent/expense_management/public/static:/app/static
             - /www/docker_persistent/expense_management/media:/app/media
-
