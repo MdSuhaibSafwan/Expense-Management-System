@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Third Party Apps
     "crispy_forms",
+    # "crispy_bootstrap4",
     # Local Apps
     "admin_site.apps.AdminSiteConfig",
     "user.apps.UserConfig",
@@ -108,7 +109,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-CRISPY_TEMPLATE_PACK = "bootstrap4"
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LANGUAGE_CODE = "en-us"
 
