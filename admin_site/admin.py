@@ -96,5 +96,9 @@ class AdminSiteConfig(admin.AdminSite):
 		extra_content["this_year_expense"] = sum(list(exp_qs.filter(date_created__year=timezone.now().year).values_list("cost", flat=True)))
 		extra_content["total_users"] = User.objects.all().count()		
 		return super().index(request, extra_content)
+	
+	def logout(self, request, extra_context=None):
+		super().logout(request, extra_context)
+		return HttpResponseRedirect("/")
 
 site = AdminSiteConfig(name="Expense Management")
