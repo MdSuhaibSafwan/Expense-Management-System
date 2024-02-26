@@ -55,6 +55,8 @@ class FundTransferAdmin(BaseAdmin):
 
 	def add_view(self, request, *args, **kwargs):
 		self.action_view = "add_view"
+		self.change_form_template = None
+		print("Inside Add View")
 		self.add_readonly_fields_according_to_user(request.user)
 		return super().add_view(request, *args, **kwargs)
 
